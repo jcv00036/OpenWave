@@ -13,6 +13,7 @@ Future<void> main() async {
   // var reproductorAudio = AudioPlayer(userAgent: 'myradioapp/1.0 (Linux;Android 11) https://myradioapp.com',
   //   useProxyForRequestHeaders: true, // default
   // );
+  WidgetsFlutterBinding.ensureInitialized();
   await TextosApp.cargarTextos("es");
   runApp(const OpenWave());
   // Emisora emisora = Emisora('Test', 'https://dispatcher.rndfnk.com/crtve/rne5/main/mp3/high', [], []);
