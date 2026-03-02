@@ -31,7 +31,8 @@ class _InicioState extends State<Inicio> {
             return ListTile(
               leading: const Icon(Icons.radio), // Icono a la izquierda
               title: Text(emisora.nombre),     // Nombre de la emisora
-              subtitle: Text(emisora.url),     // URL o frecuencia debajo
+              subtitle: Text(emisora.url),     // URL
+              //onLongPress: , TODO: Modificar emisora
               trailing: const Icon(Icons.play_arrow), // Botón de play a la derecha
               onTap: () {
                 print("Reproduciendo: ${emisora.nombre}");
