@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 class TextosApp{
 
   static Map<String, String> _textos = {};
-  static final String _origenTextos = "assets/l10n/idiomas/";
+  static final String _origenTextos = "assets/l10n/idiomas";
 
 
   TextosApp._singletonConst();

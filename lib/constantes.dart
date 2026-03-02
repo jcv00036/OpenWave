@@ -1,0 +1,1 @@
+const String USER_AGENT = "OpenWave/0.1 (Android)";

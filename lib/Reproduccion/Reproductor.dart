@@ -3,20 +3,21 @@ import 'package:openwave/Nucleo/IListaReproduccion.dart';
 import 'package:openwave/Reproduccion/IReproductor.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../constantes.dart';
+
 class Reproductor implements IReproductor{
 
-  final AudioPlayer _reproductor;
+  static final AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
+                                                        useProxyForRequestHeaders: true, // default
+                                                      );
+  Reproductor() : super();
 
-  Reproductor(this._reproductor) : super();
-
-  @override
-  bool pasarEmisora() {
+  static bool pasarEmisora() {
     // TODO: implement pasarEmisora
     throw UnimplementedError();
   }
 
-  @override
-  void playPause() {
+  static void playPause() {
     if (_reproductor.playing) {
       _reproductor.pause();
     } else {
@@ -24,14 +25,12 @@ class Reproductor implements IReproductor{
     }
   }
 
-  @override
-  void reproducirEmisora(IEmisora emisora) async {
+  static void reproducirEmisora(IEmisora emisora) async {
     await _reproductor.setUrl(emisora.url);
     _reproductor.play();
   }
 
-  @override
-  bool reproducirLista(IListaReproduccion lista) {
+  static bool reproducirLista(IListaReproduccion lista) {
     // TODO: implement reproducirLista
     throw UnimplementedError();
   }
