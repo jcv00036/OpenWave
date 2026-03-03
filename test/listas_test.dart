@@ -12,9 +12,9 @@ void main() {
 
     test('Debe devolver emisoras en orden alfabético cuando no es rutina', () {
       playlist.emisoras = [
-        Emisora('Zeta', 'url1', [], []),
-        Emisora('Alpha', 'url2', [], []),
-        Emisora('Beta', 'url3', [], []),
+        Emisora('1', 'Zeta', 'url1', [], []),
+        Emisora('2', 'Alpha', 'url2', [], []),
+        Emisora('3', 'Beta', 'url3', [], []),
       ];
 
       final resultado = playlist.emisoras;
@@ -24,9 +24,9 @@ void main() {
     });
 
     test('Debe devolver emisoras por orden de tiempo cuando es rutina', () {
-      final e1 = Emisora('Mañana', 'url1', [], []);
-      final e2 = Emisora('Tarde', 'url2', [], []);
-      final e3 = Emisora('Noche', 'url3', [], []);
+      final e1 = Emisora('1', 'Mañana', 'url1', [], []);
+      final e2 = Emisora('2', 'Tarde', 'url2', [], []);
+      final e3 = Emisora('3', 'Noche', 'url3', [], []);
 
       // Seteamos la temporización. El setter pondrá esRutina = true.
       playlist.temporizacion = {

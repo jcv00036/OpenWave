@@ -10,5 +10,6 @@ abstract class IEmisora{
   set etiquetas(List<String> etiquetas);
 
   int compareTo(IEmisora emisora);
+  bool operator ==(Object otra);
   Map<String, dynamic> toMap();
 }

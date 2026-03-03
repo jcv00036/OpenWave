@@ -26,4 +26,15 @@ class GestorEmisoras {
   }
 
   static List<IEmisora> get emisoras => _emisoras;
+
+  static Future<bool> agregarEmisora(String nombre, String url) async{
+    try {
+      int id = await _database.insert("emisora", {"nombre": nombre, "url": url});
+      _emisoras.add(Emisora(id.toString(), nombre, url, [], []));
+      return true;
+    } catch (e) {
+      print("Error al agregar emisora: $e");
+      return false;
+    }
+  }
 }

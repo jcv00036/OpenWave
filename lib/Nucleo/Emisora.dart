@@ -40,6 +40,12 @@ class Emisora implements IEmisora{
   int compareTo(IEmisora emisora) => _nombre.compareTo(emisora.nombre);
 
   @override
+  bool operator ==(Object other) {
+    if (other is! IEmisora) return false;
+    return _id == other.id;
+  }
+
+  @override
   Map<String, dynamic> toMap(){
     //TODO: Ir poniendo los campos
     return {
