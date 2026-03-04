@@ -1,11 +1,10 @@
 import 'package:openwave/Nucleo/IEmisora.dart';
 import 'package:openwave/Nucleo/IListaReproduccion.dart';
-import 'package:openwave/Reproduccion/IReproductor.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../constantes.dart';
 
-class Reproductor implements IReproductor{
+class Reproductor{
 
   static final AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
                                                         useProxyForRequestHeaders: true, // default

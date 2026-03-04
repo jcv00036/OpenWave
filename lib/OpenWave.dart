@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:openwave/Reproduccion/IReproductor.dart';
 import 'package:openwave/inicio.dart';
-
-import 'Reproduccion/Reproductor.dart';
-import 'constantes.dart';
 
 class OpenWave extends StatelessWidget {
 
