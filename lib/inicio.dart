@@ -107,13 +107,4 @@ class _InicioState extends State<Inicio> with WidgetsBindingObserver {
       ),
     );
   }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.hidden ||
-        state == AppLifecycleState.paused) {
-      print("Base de datos cerrada");
-      BaseDatos.cerrarBaseDatos();
-    }
-  }
 }
