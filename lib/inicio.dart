@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/BaseDatos.dart';
 import 'package:openwave/Nucleo/Emisora.dart';
+import 'package:openwave/Pantallas/AgregarEmisora.dart';
 import 'package:openwave/Reproduccion/Reproductor.dart';
 import 'package:openwave/l10n/textosApp.dart';
 import 'package:openwave/Nucleo/GestorEmisoras.dart';
@@ -52,7 +53,11 @@ class _InicioState extends State<Inicio> with WidgetsBindingObserver {
                     fixedSize: WidgetStateProperty.all(const Size(200, 50)),
                   ),
                   onPressed:
-                      () {}, //TODO : Implementar función para agregar emisora
+                      () async{await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const PantallaAgregarEmisora()),
+                                );
+                              },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
