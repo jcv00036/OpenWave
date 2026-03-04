@@ -22,7 +22,7 @@ class TextosApp{
   }
 
   static String getTexto(String clave){
-    return _textos.keys.contains(clave) ? _textos[clave]! : "[$clave no encontrada]";
+    return _textos.keys.contains(clave) ? _textos[clave]! : "[cadena $clave no encontrada]";
   }
 
 }

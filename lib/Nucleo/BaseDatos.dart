@@ -36,4 +36,9 @@ class BaseDatos {
 
     return await openDatabase(directorioBaseDatos);
   }
+
+  static void cerrarBaseDatos() {
+    _database?.close();
+    _database = null;
+  }
 }

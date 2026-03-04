@@ -34,4 +34,9 @@ class Reproductor implements IReproductor{
     // TODO: implement reproducirLista
     throw UnimplementedError();
   }
+
+  static void pararReproduccion() {
+    _reproductor.stop();
+    _reproductor.dispose();
+  }
 }
