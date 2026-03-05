@@ -6,6 +6,7 @@ import 'package:openwave/openwave_app.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:system_theme/system_theme.dart';
 
 
 Future<void> main() async {
@@ -19,6 +20,11 @@ Future<void> main() async {
     databaseFactory = databaseFactoryFfi;
   }
   await GestorEmisoras.init();
+
+  // Se cargan los colores
+  SystemTheme.fallbackColor = Colors.amber;
+  await SystemTheme.accentColor.load();
+
   runApp(const OpenWaveApp());
   // Emisora emisora = Emisora('Test', 'https://dispatcher.rndfnk.com/crtve/rne5/main/mp3/high', [], []);
   // reproductor.reproducirEmisora(emisora);
