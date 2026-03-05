@@ -19,7 +19,6 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  await GestorEmisoras.init();
 
   // Se cargan los colores
   SystemTheme.fallbackColor = Colors.amber;

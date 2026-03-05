@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Nucleo/gestor_emisoras.dart';
-import '../l10n/textos_app.dart';
+import '../../Nucleo/gestor_emisoras.dart';
+import '../../l10n/textos_app.dart';
 
 class PantallaAgregarEmisora extends StatefulWidget {
-  const PantallaAgregarEmisora({super.key});
+  const PantallaAgregarEmisora({super.key, required this.agregarEmisora});
+
+  final Function(String, String) agregarEmisora;
 
   @override
   State<PantallaAgregarEmisora> createState() => _PantallaAgregarEmisoraState();
@@ -101,7 +103,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                   ),
                 );
               } else {
-                GestorEmisoras.agregarEmisora(nombre, url);
+                widget.agregarEmisora(nombre, url);
                 Navigator.pop(context);
               }
             },

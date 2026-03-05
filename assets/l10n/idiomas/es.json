@@ -6,5 +6,6 @@
   "url_emisora" : "URL de la emisora",
   "atencion_titulo" : "Atención",
   "error_campos" : "Por favor, rellene todos los campos",
-  "boton_aceptar" : "Aceptar"
+  "boton_aceptar" : "Aceptar",
+  "nav_emisoras" : "Emisoras"
 }
