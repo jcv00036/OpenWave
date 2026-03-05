@@ -16,6 +16,9 @@ class Inicio extends StatefulWidget {
   State<Inicio> createState() => _InicioState();
 }
 
+// TODO: Eliminar el menú lateral de navegación y añadir una barra inferior de navegación
+// TODO: Añadir la barra de reproducción en la parte inferior de la pantalla
+
 class _InicioState extends State<Inicio> with WidgetsBindingObserver {
   IEmisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
 
@@ -53,10 +56,12 @@ class _InicioState extends State<Inicio> with WidgetsBindingObserver {
                     fixedSize: WidgetStateProperty.all(const Size(200, 50)),
                   ),
                   onPressed:
-                      () async{await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const PantallaAgregarEmisora()),
-                                );
+                      () async{ setState(() async{
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const PantallaAgregarEmisora()),
+                                  );
+                                });
                               },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

@@ -15,7 +15,8 @@ class OpenWave extends StatelessWidget {
           ),
           useMaterial3: true
       ),
-
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: const Inicio(),
     );
   }
