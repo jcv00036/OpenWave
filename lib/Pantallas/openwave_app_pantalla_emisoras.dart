@@ -43,13 +43,20 @@ class _OpenwaveAppPantallaEmisorasState
                   subtitle: Text(emisora.url),
                   // URL
                   //onLongPress: , TODO: Modificar emisora
-                  trailing: ElevatedButton(
-                    //TODO: Añadir botón de tres puntos para modificar la emisora
-                    onPressed: () =>
-                        botonEmisoraPulsado(emisora, _emisoraSeleccionada),
-                    child: emisora == _emisoraSeleccionada
-                        ? const Icon(Icons.stop_rounded)
-                        : const Icon(Icons.play_arrow_rounded),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () => botonAgregarPulsado, // TODO: Añadir opción
+                          icon: Icon(Icons.settings)),
+                      ElevatedButton(
+                        onPressed: () =>
+                            botonEmisoraPulsado(emisora, _emisoraSeleccionada),
+                        child: emisora == _emisoraSeleccionada
+                            ? const Icon(Icons.stop_rounded)
+                            : const Icon(Icons.play_arrow_rounded),
+                      ),
+                    ],
                   ),
                   // Botón de reproducción a la derecha
                   onTap: () {
@@ -92,7 +99,10 @@ class _OpenwaveAppPantallaEmisorasState
       context,
       MaterialPageRoute(
         builder: (context) {
-          return PantallaAgregarEmisora(agregarEmisora: (nombre, url) => manager.agregarEmisora(nombre, url));
+          return PantallaAgregarEmisora(
+            agregarEmisora: (nombre, url) =>
+                manager.agregarEmisora(nombre, url),
+          );
         },
       ),
     );

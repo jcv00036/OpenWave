@@ -20,6 +20,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: //SingleChildScrollView(
         /*child:*/ Padding(
           padding: const EdgeInsets.all(16.0),
@@ -75,31 +76,15 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                 // Mostrar un mensaje de error
                 showDialog(
                   context: context,
-                  builder: (BuildContext context) => Dialog(
-                    child: SizedBox(
-                      width: 300,
-                      height: 200,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              TextosApp.getTexto("atencion_titulo"),
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            Flexible(
-                              child: Text(TextosApp.getTexto("error_campos")),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(TextosApp.getTexto("boton_aceptar")),
-                            ),
-                          ],
-                        ),
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text(TextosApp.getTexto("atencion_titulo")),
+                    content: Text(TextosApp.getTexto("error_campos")),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'OK'),
+                        child: Text(TextosApp.getTexto("boton_aceptar")),
                       ),
-                    ),
+                    ],
                   ),
                 );
               } else {
