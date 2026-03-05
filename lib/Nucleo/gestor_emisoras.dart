@@ -1,11 +1,10 @@
-import 'package:openwave/Nucleo/BaseDatos.dart';
-import 'package:openwave/Nucleo/Emisora.dart';
+import 'package:openwave/Nucleo/base_datos.dart';
+import 'package:openwave/Nucleo/emisora.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:openwave/Nucleo/IEmisora.dart';
 
 class GestorEmisoras {
 
-  static List<IEmisora> _emisoras = [];
+  static List<Emisora> _emisoras = [];
   static late final Database _database;
 
   GestorEmisoras._singletonConst();
@@ -25,7 +24,7 @@ class GestorEmisoras {
     await _cargarEmisoras();
   }
 
-  static List<IEmisora> get emisoras => _emisoras;
+  static List<Emisora> get emisoras => _emisoras;
 
   static Future<bool> agregarEmisora(String nombre, String url) async{
     try {

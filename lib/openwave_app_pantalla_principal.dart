@@ -1,26 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:openwave/Nucleo/BaseDatos.dart';
-import 'package:openwave/Nucleo/Emisora.dart';
-import 'package:openwave/Pantallas/AgregarEmisora.dart';
-import 'package:openwave/Reproduccion/Reproductor.dart';
-import 'package:openwave/l10n/textosApp.dart';
-import 'package:openwave/Nucleo/GestorEmisoras.dart';
+import 'package:openwave/Nucleo/base_datos.dart';
+import 'package:openwave/Nucleo/emisora.dart';
+import 'package:openwave/Pantallas/agregar_emisora.dart';
+import 'package:openwave/Reproduccion/reproductor.dart';
+import 'package:openwave/l10n/textos_app.dart';
+import 'package:openwave/Nucleo/gestor_emisoras.dart';
 
-import 'Nucleo/IEmisora.dart';
-
-class Inicio extends StatefulWidget {
-  const Inicio({super.key});
+class OpenWavePantallaPrincipal extends StatefulWidget {
+  const OpenWavePantallaPrincipal({super.key});
 
   @override
-  State<Inicio> createState() => _InicioState();
+  State<OpenWavePantallaPrincipal> createState() => _OpenWavePantallaPrincipalState();
 }
 
 // TODO: Eliminar el menú lateral de navegación y añadir una barra inferior de navegación
 // TODO: Añadir la barra de reproducción en la parte inferior de la pantalla
 
-class _InicioState extends State<Inicio> with WidgetsBindingObserver {
-  IEmisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
+class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> with WidgetsBindingObserver {
+  Emisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
 
   @override
   void initState() {

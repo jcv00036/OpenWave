@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Nucleo/GestorEmisoras.dart';
-import '../l10n/textosApp.dart';
+import '../Nucleo/gestor_emisoras.dart';
+import '../l10n/textos_app.dart';
 
 class PantallaAgregarEmisora extends StatefulWidget {
   const PantallaAgregarEmisora({super.key});

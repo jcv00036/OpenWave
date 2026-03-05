@@ -1,7 +1,7 @@
-import 'package:openwave/Nucleo/IEmisora.dart';
-import 'package:openwave/Nucleo/IListaReproduccion.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:openwave/Nucleo/lista_reproduccion.dart';
 
+import '../Nucleo/emisora.dart';
 import '../constantes.dart';
 
 class Reproductor{
@@ -24,12 +24,12 @@ class Reproductor{
     }
   }
 
-  static void reproducirEmisora(IEmisora emisora) async {
+  static void reproducirEmisora(Emisora emisora) async {
     await _reproductor.setUrl(emisora.url);
     _reproductor.play();
   }
 
-  static bool reproducirLista(IListaReproduccion lista) {
+  static bool reproducirLista(ListaReproduccion lista) {
     // TODO: implement reproducirLista
     throw UnimplementedError();
   }

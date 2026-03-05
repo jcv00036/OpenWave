@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:openwave/inicio.dart';
+import 'package:openwave/openwave_app_pantalla_principal.dart';
 
-class OpenWave extends StatelessWidget {
+class OpenWaveApp extends StatelessWidget {
 
-  const OpenWave({super.key});
+  const OpenWaveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class OpenWave extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: const Inicio(),
+      home: const OpenWavePantallaPrincipal(),
     );
   }
 }

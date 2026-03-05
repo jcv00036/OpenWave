@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwave/Nucleo/Emisora.dart';
-import 'package:openwave/Nucleo/ListaReproduccion.dart';
+import 'package:openwave/Nucleo/emisora.dart';
+import 'package:openwave/Nucleo/lista_reproduccion.dart';
 
 void main() {
   group('Pruebas de Ordenación de ListaReproduccion', () {
