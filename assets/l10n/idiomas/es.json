@@ -7,5 +7,7 @@
   "atencion_titulo" : "Atención",
   "error_campos" : "Por favor, rellene todos los campos",
   "boton_aceptar" : "Aceptar",
-  "nav_emisoras" : "Emisoras"
+  "nav_emisoras" : "Emisoras",
+  "ecualizador" : "Ecualizador",
+  "reproductor_titulo" : "Reproduciendo ahora"
 }

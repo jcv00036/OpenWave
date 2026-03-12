@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/base_datos.dart';
 import 'package:openwave/Nucleo/emisora.dart';
 import 'package:openwave/Pantallas/Modales/agregar_emisora.dart';
+import 'package:openwave/Pantallas/Modales/pantalla_reproduccion.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_emisoras.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/l10n/textos_app.dart';
@@ -61,29 +62,39 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
                   return Container();
                 }
                 return BottomAppBar(
-                    child: Row(
-                        children: [
-                          Text(manager.emisoraSeleccionada.nombre, style: Theme.of(context).textTheme.titleMedium),
-                          Spacer(),
-                          IconButton(
-                              onPressed: manager.pararReproduccion,
-                              icon: Icon(Icons.stop_outlined),
-                              style: ButtonStyle(visualDensity: VisualDensity.compact),),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              fixedSize: const Size(60, 60),
-                               padding: EdgeInsets.zero,
-                               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    child: InkWell(
+                      child: Row(
+                          children: [
+                            Image(image: manager.emisoraSeleccionada.imagen!.image,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover),
+                            SizedBox(width: 10),
+                            Text(manager.emisoraSeleccionada.nombre, style: Theme.of(context).textTheme.titleMedium),
+                            Spacer(),
+                            IconButton(
+                                onPressed: manager.pararReproduccion,
+                                icon: Icon(Icons.stop_outlined),
+                                style: ButtonStyle(visualDensity: VisualDensity.compact),),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                fixedSize: const Size(60, 60),
+                                 padding: EdgeInsets.zero,
+                                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                              ),
+                              child: Icon(manager.reproduciendo ? Icons.pause : Icons.play_arrow_rounded, size: 30,),
+                              onPressed: () => manager.playPause(),
                             ),
-                            child: Icon(manager.reproduciendo ? Icons.pause : Icons.play_arrow_rounded, size: 30,),
-                            onPressed: () => manager.playPause(),
-                          ),
-                          IconButton(
-                            onPressed: manager.pasarEmisora,
-                            icon: Icon(Icons.skip_next),
-                            style: ButtonStyle(visualDensity: VisualDensity.compact),),
-                        ]
+                            IconButton(
+                              onPressed: manager.pasarEmisora,
+                              icon: Icon(Icons.skip_next),
+                              style: ButtonStyle(visualDensity: VisualDensity.compact),),
+                          ]
+                      ),
+                      onTap: () => {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PantallaReproduccion()))
+                      },
                     )
                 );
               }

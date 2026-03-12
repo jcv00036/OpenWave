@@ -15,30 +15,30 @@ class OpenWaveApp extends StatelessWidget {
         return ColoredBox(
           color:
               color.accent, // Automatically updates when system theme changes
-          child: MaterialApp(
-            title: "OpenWave",
-            theme: ThemeData.from(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: color.accent,
-                brightness: Brightness.light,
-              ),
-              useMaterial3: true,
-            ),
-            darkTheme: ThemeData.from(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: color.accent,
-                brightness: Brightness.dark,
-              ),
-            ),
-            themeMode: ThemeMode.system,
-            home: MultiProvider(
+          child: MultiProvider(
               providers: [
                 ChangeNotifierProvider(create: (context) => GestorEmisoras()),
                 ChangeNotifierProvider(create: (context) => Reproductor()),
               ],
-              child: const OpenWavePantallaPrincipal(),
-            ),
-          ),
+              child:MaterialApp(
+                title: "OpenWave",
+                theme: ThemeData.from(
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: color.accent,
+                    brightness: Brightness.light,
+                  ),
+                  useMaterial3: true,
+                ),
+                darkTheme: ThemeData.from(
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: color.accent,
+                    brightness: Brightness.dark,
+                  ),
+                ),
+                themeMode: ThemeMode.system,
+                home: const OpenWavePantallaPrincipal(),
+              )
+          )
         );
       },
     );
