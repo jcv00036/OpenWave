@@ -10,8 +10,6 @@ import 'package:system_theme/system_theme.dart';
 
 
 Future<void> main() async {
-  // WidgetsFlutterBinding();
-  //
   WidgetsFlutterBinding.ensureInitialized();
   await TextosApp.cargarTextos("es");
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -25,6 +23,4 @@ Future<void> main() async {
   await SystemTheme.accentColor.load();
 
   runApp(const OpenWaveApp());
-  // Emisora emisora = Emisora('Test', 'https://dispatcher.rndfnk.com/crtve/rne5/main/mp3/high', [], []);
-  // reproductor.reproducirEmisora(emisora);
 }

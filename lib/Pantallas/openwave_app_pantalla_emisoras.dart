@@ -15,9 +15,7 @@ class OpenwaveAppPantallaEmisoras extends StatefulWidget {
       _OpenwaveAppPantallaEmisorasState();
 }
 
-class _OpenwaveAppPantallaEmisorasState
-    extends State<OpenwaveAppPantallaEmisoras> {
-  Emisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
+class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisoras> {
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +26,11 @@ class _OpenwaveAppPantallaEmisorasState
         child: Icon(CupertinoIcons.plus),
       ),
       body: SafeArea(
-        child: Consumer<GestorEmisoras>(
-          builder: (context, manager, child) {
+        child: Consumer2<GestorEmisoras, Reproductor>(
+          builder: (context, manager, reproductor, child) {
             return ListView.builder(
               // Obtenemos la cantidad de emisoras
+              padding: EdgeInsets.only(bottom: 56),
               itemCount: manager.emisoras.length,
               itemBuilder: (context, index) {
                 final emisora = manager.emisoras[index];
@@ -51,8 +50,8 @@ class _OpenwaveAppPantallaEmisorasState
                           icon: Icon(Icons.settings)),
                       ElevatedButton(
                         onPressed: () =>
-                            botonEmisoraPulsado(emisora, _emisoraSeleccionada),
-                        child: emisora == _emisoraSeleccionada
+                            botonEmisoraPulsado(emisora, reproductor),
+                        child: emisora == reproductor.emisoraSeleccionada
                             ? const Icon(Icons.stop_rounded)
                             : const Icon(Icons.play_arrow_rounded),
                       ),
@@ -62,12 +61,12 @@ class _OpenwaveAppPantallaEmisorasState
                   onTap: () {
                     print("Reproduciendo: ${emisora.nombre}");
                     setState(() {
-                      if (_emisoraSeleccionada == emisora) {
-                        _emisoraSeleccionada = Emisora("0", "", "", [], []);
-                        Reproductor.pararReproduccion();
+                      if (reproductor.emisoraSeleccionada == emisora) {
+                        reproductor.emisoraSeleccionada = Emisora("0", "", "", [], []);
+                        reproductor.pararReproduccion();
                       } else {
-                        _emisoraSeleccionada = emisora;
-                        Reproductor.reproducirEmisora(emisora);
+                        reproductor.emisoraSeleccionada = emisora;
+                        reproductor.reproducirEmisora(emisora);
                       }
                     });
                   },
@@ -80,15 +79,14 @@ class _OpenwaveAppPantallaEmisorasState
     );
   }
 
-  void botonEmisoraPulsado(Emisora emisora, Emisora emisoraSeleccionada) {
+  void botonEmisoraPulsado(Emisora emisora, Reproductor reproductor) {
     print("Reproduciendo: ${emisora.nombre}");
     setState(() {
-      if (_emisoraSeleccionada == emisora) {
-        _emisoraSeleccionada = Emisora("0", "", "", [], []);
-        Reproductor.pararReproduccion();
+      if (reproductor.emisoraSeleccionada == emisora) {
+        reproductor.pararReproduccion();
       } else {
-        _emisoraSeleccionada = emisora;
-        Reproductor.reproducirEmisora(emisora);
+        reproductor.emisoraSeleccionada = emisora;
+        reproductor.reproducirEmisora(emisora);
       }
     });
   }

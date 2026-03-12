@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/gestor_emisoras.dart';
+import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/openwave_app_pantalla_principal.dart';
 import 'package:provider/provider.dart';
 import 'package:system_theme/system_theme_builder.dart';
@@ -23,11 +24,17 @@ class OpenWaveApp extends StatelessWidget {
               ),
               useMaterial3: true,
             ),
-            darkTheme: ThemeData.dark(),
+            darkTheme: ThemeData.from(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: color.accent,
+                brightness: Brightness.dark,
+              ),
+            ),
             themeMode: ThemeMode.system,
             home: MultiProvider(
               providers: [
                 ChangeNotifierProvider(create: (context) => GestorEmisoras()),
+                ChangeNotifierProvider(create: (context) => Reproductor()),
               ],
               child: const OpenWavePantallaPrincipal(),
             ),
