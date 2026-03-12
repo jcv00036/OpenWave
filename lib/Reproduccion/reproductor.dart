@@ -8,15 +8,18 @@ import '../constantes.dart';
 class Reproductor extends ChangeNotifier{
 
   Emisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
-
+  List<Emisora> _emisorasEscuchando = [];
   final AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
                                                         useProxyForRequestHeaders: true, // default
                                                       );
   Reproductor() : super();
 
-  bool pasarEmisora() {
-    // TODO: implement pasarEmisora
-    throw UnimplementedError();
+  void pasarEmisora() async{
+    await _reproductor.seekToNext();
+    if (_reproductor.currentIndex != null) {
+      _emisoraSeleccionada = _emisorasEscuchando[_reproductor.currentIndex!];
+      notifyListeners();
+    }
   }
 
   void playPause() {
@@ -28,16 +31,20 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
   }
 
-  void reproducirEmisora(Emisora emisora) async {
+  void reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
+    var indiceEmisora = emisoras.indexOf(emisora);
+    if (indiceEmisora == -1) {
+      return;
+    }
+    await _reproductor.setAudioSources(
+      emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
+      initialIndex: indiceEmisora,
+    );
+    _emisorasEscuchando = emisoras;
     _emisoraSeleccionada = emisora;
-    await _reproductor.setUrl(emisora.url);
+    //await _reproductor.setUrl(emisora.url);
     _reproductor.play();
     notifyListeners();
-  }
-
-  bool reproducirLista(ListaReproduccion lista) {
-    // TODO: implement reproducirLista
-    throw UnimplementedError();
   }
 
   void pararReproduccion() {

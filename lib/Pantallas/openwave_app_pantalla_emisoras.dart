@@ -70,7 +70,7 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                         reproductor.pararReproduccion();
                       } else {
                         reproductor.emisoraSeleccionada = emisora;
-                        reproductor.reproducirEmisora(emisora);
+                        reproductor.reproducirEmisora(emisora, Provider.of<GestorEmisoras>(context, listen: false).emisoras);
                       }
                     });
                   },
@@ -90,7 +90,7 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
         reproductor.pararReproduccion();
       } else {
         reproductor.emisoraSeleccionada = emisora;
-        reproductor.reproducirEmisora(emisora);
+        reproductor.reproducirEmisora(emisora, Provider.of<GestorEmisoras>(context, listen: false).emisoras);
       }
     });
   }
