@@ -41,6 +41,7 @@ dependencies:
   path : ^1.8.3
   system_theme: ^3.2.0
   provider: ^6.1.5+1
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ flutter:
   assets:
     - assets/l10n/idiomas/
     - assets/openwave.db
+    - assets/img/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

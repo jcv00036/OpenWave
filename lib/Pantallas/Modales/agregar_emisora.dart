@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../Nucleo/gestor_emisoras.dart';
+import '../../constantes.dart';
 import '../../l10n/textos_app.dart';
 
 class PantallaAgregarEmisora extends StatefulWidget {
   const PantallaAgregarEmisora({super.key, required this.agregarEmisora});
 
-  final Function(String, String) agregarEmisora;
+  final Function(String, String, Image) agregarEmisora;
 
   @override
   State<PantallaAgregarEmisora> createState() => _PantallaAgregarEmisoraState();
@@ -16,13 +20,15 @@ class PantallaAgregarEmisora extends StatefulWidget {
 class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   String nombre = "";
   String url = "";
+  Image imagen = Image.asset(IMAGEN_EMISORA_POR_DEFECTO,
+                             width: 200,
+                             height: 200);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: //SingleChildScrollView(
-        /*child:*/ Padding(
+      body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,6 +37,28 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
               Text(
                 TextosApp.getTexto("agregar_emisora"),
                 style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              SizedBox(height: 16),
+              Container(
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    imagen,
+                    FloatingActionButton(
+                        onPressed: () {
+                          // Cargamos la imagen que introduce el usuario con el image_picker
+                          final picker = ImagePicker();
+                          picker.pickImage(source: ImageSource.gallery).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                imagen = Image.file(File(value.path), width: 200, height: 200);
+                              });
+                            }
+                          });
+                        },
+                        child: Icon(Icons.add_a_photo))
+                  ],
+                ),
               ),
               Text(
                 TextosApp.getTexto("nombre_emisora"),
@@ -64,7 +92,8 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
           ),
         ),
       //),
-      persistentFooterButtons: [
+      persistentFooterButtons:
+      [
         Center(
           child: ElevatedButton(
             style: ButtonStyle(
@@ -88,7 +117,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                   ),
                 );
               } else {
-                widget.agregarEmisora(nombre, url);
+                widget.agregarEmisora(nombre, url, imagen);
                 Navigator.pop(context);
               }
             },

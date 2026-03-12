@@ -35,7 +35,11 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
               itemBuilder: (context, index) {
                 final emisora = manager.emisoras[index];
                 return ListTile(
-                  leading: const Icon(Icons.radio),
+                  leading: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: emisora.imagen,
+                  ),
                   // Icono a la izquierda
                   title: Text(emisora.nombre),
                   // Nombre de la emisora
@@ -98,8 +102,8 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       MaterialPageRoute(
         builder: (context) {
           return PantallaAgregarEmisora(
-            agregarEmisora: (nombre, url) =>
-                manager.agregarEmisora(nombre, url),
+            agregarEmisora: (nombre, url, imagen) =>
+                manager.agregarEmisora(nombre, url, imagen),
           );
         },
       ),
