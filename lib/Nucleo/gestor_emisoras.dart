@@ -72,4 +72,49 @@ class GestorEmisoras extends ChangeNotifier{
       return false;
     }
   }
+
+  Future<bool> editarEmisora(Emisora emisora, String nombre, String url, Image imagen, List<String> etiquetas) async {
+    try {
+      // Convierto la imagen a bytes
+      final Completer<ui.Image> completer = Completer<ui.Image>();
+      final ImageStream stream = imagen.image.resolve(const ImageConfiguration());
+      late ImageStreamListener listener;
+
+      listener = ImageStreamListener((ImageInfo info, bool _) {
+        completer.complete(info.image);
+        stream.removeListener(listener);
+      });
+      stream.addListener(listener);
+
+      final ui.Image uiImage = await completer.future;
+      final ByteData? byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
+      final Uint8List imagenBytes = byteData!.buffer.asUint8List();
+
+      // Edito la emisora en la base de datos
+      var id = emisora.id;
+      await _database.update("emisora", {"nombre": nombre, "url": url, "imagen": imagenBytes, "etiquetas": etiquetas.join(",")}, where: "id = ?", whereArgs: [id]);
+      // Actualizo la emisora en la lista de emisoras
+      int indice = _emisoras.indexOf(emisora);
+      _emisoras[indice].nombre = nombre;
+      _emisoras[indice].url = url;
+      _emisoras[indice].imagen = imagen;
+      _emisoras[indice].etiquetas = etiquetas;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      print("Error al editar emisora: $e");
+      return false;
+    }
+  }
+
+  Future<void> eliminarEmisora(Emisora emisora) async {
+    try{
+      await _database.delete("emisora", where: "id = ?", whereArgs: [emisora.id]);
+      _emisoras.remove(emisora);
+      notifyListeners();
+    }catch(e){
+      print("Error al eliminar emisora: $e");
+      return;
+    }
+  }
 }
