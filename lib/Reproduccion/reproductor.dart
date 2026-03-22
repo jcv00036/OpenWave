@@ -83,6 +83,7 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
   }
 
+  List<Emisora> get emisorasEscuchando => List.of(_emisorasEscuchando);
   Emisora get emisoraSeleccionada => _emisoraSeleccionada;
   void set emisoraSeleccionada(Emisora emisora) => _emisoraSeleccionada = emisora;
 

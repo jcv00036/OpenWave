@@ -73,8 +73,8 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
                             Text(manager.emisoraSeleccionada.nombre, style: Theme.of(context).textTheme.titleMedium),
                             Spacer(),
                             IconButton(
-                                onPressed: manager.pararReproduccion,
-                                icon: Icon(Icons.stop_outlined),
+                                onPressed: manager.retrocederEmisora,
+                                icon: Icon(Icons.skip_previous),
                                 style: ButtonStyle(visualDensity: VisualDensity.compact),),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -88,16 +88,15 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
                                   height: 30,
                                   child: manager.cargando
                                          ? CircularProgressIndicator()
-                                         : Icon(manager.reproduciendo ? Icons.pause : Icons.play_arrow_rounded,)),
-                              onPressed: () => manager.playPause(),
+                                         : Icon(Icons.stop_outlined, size: 30),
+                              ),
+                              onPressed: () => manager.pararReproduccion(),
                             ),
-                            manager.haySiguiente
-                                ? IconButton(
-                                    onPressed: manager.pasarEmisora,
-                                    icon: Icon(Icons.skip_next),
-                                    style: ButtonStyle(visualDensity: VisualDensity.compact),
-                                )
-                                : SizedBox(width: 24, height: 24),
+                            IconButton(
+                              onPressed: manager.pasarEmisora,
+                              icon: Icon(Icons.skip_next),
+                              style: ButtonStyle(visualDensity: VisualDensity.compact),
+                            )
                           ]
                       ),
                       onTap: () => {
