@@ -4,29 +4,39 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../Nucleo/emisora.dart';
 import '../../Nucleo/gestor_emisoras.dart';
 import '../../constantes.dart';
 import '../../l10n/textos_app.dart';
 
 class PantallaAgregarEmisora extends StatefulWidget {
-  const PantallaAgregarEmisora({super.key, required this.agregarEmisora});
+  PantallaAgregarEmisora({super.key, required this.agregarEmisora, emisora, this.eliminarEmisora}) : _emisoraEditar = emisora, _modoEditar = emisora != null;
+
 
   final Function(String, String, Image, List<String>) agregarEmisora;
+  final Function(Emisora)? eliminarEmisora;
+  final Emisora? _emisoraEditar;
+  late final _modoEditar;
 
   @override
   State<PantallaAgregarEmisora> createState() => _PantallaAgregarEmisoraState();
 }
 
 class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
-  String nombre = "";
-  String url = "";
-  Image imagen = Image.asset(IMAGEN_EMISORA_POR_DEFECTO,
-                             width: 200,
-                             height: 200);
-  List<String> etiquetas = <String>[];
+  late String nombre = widget._modoEditar ? widget._emisoraEditar!.nombre : "";
+  late String url = widget._modoEditar ? widget._emisoraEditar!.url : "";
+  late Image imagen =  widget._modoEditar ? widget._emisoraEditar!.imagen! : Image.asset(IMAGEN_EMISORA_POR_DEFECTO,
+                                                                                          width: 200,
+                                                                                          height: 200);
+  late List<String> etiquetas = widget._modoEditar ? widget._emisoraEditar!.etiquetas : [];
   String buffer = "";
 
   final TextEditingController _etiquetasController = TextEditingController();
+  late final TextEditingController _nombreController = TextEditingController(text: nombre);
+  late final TextEditingController _urlController = TextEditingController(text: url);
+
+
+  late final String _titulo = widget._modoEditar ? TextosApp.getTexto("editar_emisora") : TextosApp.getTexto("agregar_emisora");
 
   @override
   void dispose() {
@@ -37,7 +47,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(TextosApp.getTexto("agregar_emisora")),),
+      appBar: AppBar(title: Text(_titulo),),
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -49,7 +59,11 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-                      imagen,
+                      Image(
+                        image: imagen.image,
+                        width: 200,
+                        height: 200
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: FloatingActionButton(
@@ -83,6 +97,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                     filled: true,
                     prefixIcon: Icon(Icons.radio),
                   ),
+                  controller: _nombreController,
                   onChanged: (nombre_nuevo) {
                     setState(() {
                       nombre = nombre_nuevo;
@@ -103,6 +118,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                     filled: true,
                     prefixIcon: Icon(Icons.link),
                   ),
+                  controller: _urlController,
                   onChanged: (url_nueva) {
                     setState(() {
                       url = url_nueva;
@@ -171,42 +187,87 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
       persistentFooterButtons:
       [
         Center(
-          child: ElevatedButton(
-            style: ButtonStyle(
-              alignment: Alignment.center,
-              fixedSize: WidgetStateProperty.all(const Size(200, 50)),
-            ),
-            onPressed: () {
-              if (nombre == "" || url == "") {
-                // Mostrar un mensaje de error
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text(TextosApp.getTexto("atencion_titulo")),
-                    content: Text(TextosApp.getTexto("error_campos")),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'OK'),
-                        child: Text(TextosApp.getTexto("boton_aceptar")),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget._modoEditar) ElevatedButton(
+                style: ButtonStyle(
+                  alignment: Alignment.center,
+                  fixedSize: WidgetStateProperty.all(const Size(180, 50)),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer),
+                ),
+                onPressed: () async {
+                  // Mostramos un diálogo de confirmación
+                  var opcion = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: Text(TextosApp.getTexto("atencion_titulo")),
+                      content: Text(TextosApp.getTexto("eliminar_emisora_pregunta")),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Cancelar'),
+                          child: Text(TextosApp.getTexto("boton_cancelar")),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Aceptar'),
+                          child: Text(TextosApp.getTexto("boton_aceptar")),
+                        ),
+                      ],
+                    )
+                  );
+                  if (opcion == 'Cancelar') return;
+                  widget.eliminarEmisora!(widget._emisoraEditar!);
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.delete),
+                    SizedBox(width: 8), // Espacio entre el icono y el texto
+                    Expanded(child: Text(TextosApp.getTexto("eliminar_emisora"), overflow: TextOverflow.ellipsis)),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  alignment: Alignment.center,
+                  fixedSize: WidgetStateProperty.all(const Size(180, 50)),
+                ),
+                onPressed: () {
+                  if (nombre == "" || url == "") {
+                    // Mostrar un mensaje de error
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: Text(TextosApp.getTexto("atencion_titulo")),
+                        content: Text(TextosApp.getTexto("error_campos")),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: Text(TextosApp.getTexto("boton_aceptar")),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              } else {
-                widget.agregarEmisora(nombre, url, imagen, etiquetas);
-                Navigator.pop(context);
-              }
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(CupertinoIcons.plus),
-                SizedBox(width: 8), // Espacio entre el icono y el texto
-                Text(TextosApp.getTexto("agregar_emisora")),
-              ],
-            ),
+                    );
+                  } else {
+                    widget.agregarEmisora(nombre, url, imagen, etiquetas);
+                    Navigator.pop(context);
+                  }
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(widget._modoEditar ? Icons.edit :CupertinoIcons.plus),
+                    SizedBox(width: 8), // Espacio entre el icono y el texto
+                    Text(_titulo, overflow: TextOverflow.ellipsis),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],

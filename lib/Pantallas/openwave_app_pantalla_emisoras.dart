@@ -52,7 +52,7 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                          onPressed: () => botonAgregarPulsado, // TODO: Añadir opción
+                          onPressed: () => botonEditarPulsado(emisora),
                           icon: Icon(Icons.settings)),
                       ElevatedButton(
                         onPressed: () =>
@@ -114,6 +114,22 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                 manager.agregarEmisora(nombre, url, imagen, etiquetas),
           );
         },
+      ),
+    );
+  }
+
+  void botonEditarPulsado(Emisora emisora) {
+    final manager = Provider.of<GestorEmisoras>(context, listen: false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PantallaAgregarEmisora(
+            agregarEmisora: (nombre, url, imagen, etiquetas) =>
+                manager.editarEmisora(emisora, nombre, url, imagen, etiquetas),
+            emisora: emisora,
+            eliminarEmisora: (emisora) => manager.eliminarEmisora(emisora),);
+          },
       ),
     );
   }
