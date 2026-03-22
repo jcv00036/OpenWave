@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
+import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
+
+import '../../Nucleo/emisora.dart';
 
 class PantallaReproduccion extends StatefulWidget {
   const PantallaReproduccion({super.key});
@@ -22,15 +25,19 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image(
-                  image: reproductor.emisoraSeleccionada.imagen!.image,
+                  image: reproductor.cargando || reproductor.emisoraSeleccionada == Emisora("0", "", "", [], [])
+                      ? Image.asset(IMAGEN_EMISORA_POR_DEFECTO).image : reproductor.emisoraSeleccionada.imagen!.image,
                   width: 250,
                   height: 250,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(height: 40),
-                Text(
-                  reproductor.emisoraSeleccionada.nombre,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    reproductor.cargando ? TextosApp.getTexto("reproductor_titulo_cargando") : reproductor.emisoraSeleccionada.nombre,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
                 ),
                 SizedBox(height: 40),
                 Row(

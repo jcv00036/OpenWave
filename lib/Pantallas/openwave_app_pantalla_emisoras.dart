@@ -55,9 +55,15 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                       ElevatedButton(
                         onPressed: () =>
                             botonEmisoraPulsado(emisora, reproductor),
-                        child: emisora == reproductor.emisoraSeleccionada
-                            ? const Icon(Icons.stop_rounded)
-                            : const Icon(Icons.play_arrow_rounded),
+                        child:  SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: reproductor.cargando && reproductor.emisoraSeleccionada == emisora
+                                  ? const CircularProgressIndicator()
+                                  : reproductor.emisoraSeleccionada == emisora
+                                    ? const Icon(Icons.stop_rounded)
+                                    : const Icon(Icons.play_arrow_rounded),
+                        ),
                       ),
                     ],
                   ),

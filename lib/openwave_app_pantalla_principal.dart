@@ -83,13 +83,21 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
                                  padding: EdgeInsets.zero,
                                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                               ),
-                              child: Icon(manager.reproduciendo ? Icons.pause : Icons.play_arrow_rounded, size: 30,),
+                              child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: manager.cargando
+                                         ? CircularProgressIndicator()
+                                         : Icon(manager.reproduciendo ? Icons.pause : Icons.play_arrow_rounded,)),
                               onPressed: () => manager.playPause(),
                             ),
-                            IconButton(
-                              onPressed: manager.pasarEmisora,
-                              icon: Icon(Icons.skip_next),
-                              style: ButtonStyle(visualDensity: VisualDensity.compact),),
+                            manager.haySiguiente
+                                ? IconButton(
+                                    onPressed: manager.pasarEmisora,
+                                    icon: Icon(Icons.skip_next),
+                                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                                )
+                                : SizedBox(width: 24, height: 24),
                           ]
                       ),
                       onTap: () => {
