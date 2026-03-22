@@ -10,5 +10,6 @@
   "nav_emisoras" : "Emisoras",
   "ecualizador" : "Ecualizador",
   "reproductor_titulo" : "Reproduciendo ahora",
-  "reproductor_titulo_cargando" : "Cargando emisora..."
+  "reproductor_titulo_cargando" : "Cargando emisora...",
+  "reproductor_titulo_cola" : "Cola de reproducción:"
 }

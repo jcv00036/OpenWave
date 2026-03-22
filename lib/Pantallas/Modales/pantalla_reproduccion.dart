@@ -17,68 +17,152 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(TextosApp.getTexto("reproductor_titulo")),),
-      body: Center(
-        child: Consumer<Reproductor>(
-          builder: (context, reproductor, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image(
-                  image: reproductor.cargando || reproductor.emisoraSeleccionada == Emisora("0", "", "", [], [])
-                      ? Image.asset(IMAGEN_EMISORA_POR_DEFECTO).image : reproductor.emisoraSeleccionada.imagen!.image,
+      appBar: AppBar(title: Text(TextosApp.getTexto("reproductor_titulo")), backgroundColor: Colors.transparent, scrolledUnderElevation: 0,),
+      body: Consumer<Reproductor>(
+        builder: (context, reproductor, child) {
+      return SingleChildScrollView( // <--- Toda la pantalla ahora tiene scroll
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start, // Alineado arriba
+          children: [
+            const SizedBox(height: 20),
+            // SECCIÓN DE CABECERA (Imagen/Spinner)
+            SizedBox(
+              width: 250,
+              height: 250,
+              child: reproductor.cargando
+                  ? CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.inversePrimary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                strokeWidth: 20,
+              )
+                  : ClipRRect( // Añadimos bordes redondeados a la imagen
+                borderRadius: BorderRadius.circular(20),
+                child: Image(
+                  image: reproductor.emisoraSeleccionada.id == "0"
+                      ? Image.asset(IMAGEN_EMISORA_POR_DEFECTO).image
+                      : (reproductor.emisoraSeleccionada.imagen?.image ?? Image.asset(IMAGEN_EMISORA_POR_DEFECTO).image),
                   width: 250,
                   height: 250,
                   fit: BoxFit.cover,
                 ),
-                SizedBox(height: 40),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    reproductor.cargando ? TextosApp.getTexto("reproductor_titulo_cargando") : reproductor.emisoraSeleccionada.nombre,
-                    style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            // NOMBRE DE LA EMISORA
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                reproductor.cargando
+                    ? TextosApp.getTexto("reproductor_titulo_cargando")
+                    : reproductor.emisoraSeleccionada.nombre,
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            // CONTROLES
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  iconSize: 50,
+                  onPressed: () => reproductor.retrocederEmisora(),
+                  icon: const Icon(Icons.skip_previous),
+                ),
+                const SizedBox(width: 20),
+                IconButton.filled(
+                  iconSize: 75,
+                  onPressed: () {
+                    reproductor.pararReproduccion();
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.stop_outlined),
+                ),
+                const SizedBox(width: 20),
+                IconButton(
+                  iconSize: 50,
+                  onPressed: () => reproductor.pasarEmisora(),
+                  icon: const Icon(Icons.skip_next),
+                ),
+              ],
+            ),
+
+            // BOTÓN ECUALIZADOR
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 70),
+              child: ElevatedButton(
+                onPressed: () => {/*TODO*/},
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.equalizer),
+                      const SizedBox(width: 10),
+                      Text(TextosApp.getTexto("ecualizador")),
+                    ],
                   ),
                 ),
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      iconSize: 50,
-                      onPressed: () {
-                        reproductor.pararReproduccion();
-                        Navigator.pop(context); // Volver atrás al detener
-                      },
-                      icon: Icon(Icons.stop_outlined),
-                    ),
-                    IconButton.filled(
-                      iconSize: 75,
-                      onPressed: () => reproductor.playPause(),
-                      icon: Icon(
-                        reproductor.reproduciendo
-                            ? Icons.pause
-                            : Icons.play_arrow_rounded,
+              ),
+            ),
+
+            // TÍTULO COLA
+            Text(
+              TextosApp.getTexto("reproductor_titulo_cola"),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+
+            // LISTA DE EMISORAS (Ahora es parte del scroll general)
+            Container(
+              margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: ListView.builder(
+                shrinkWrap: true, // <--- Importante: Ajusta el tamaño al contenido
+                physics: const NeverScrollableScrollPhysics(), // <--- Importante: Desactiva el scroll propio de la lista
+                padding: const EdgeInsets.all(10),
+                itemCount: reproductor.emisorasEscuchando.length,
+                itemBuilder: (context, index) {
+                  final emisora = reproductor.emisorasEscuchando[index];
+                  final esSeleccionada = emisora == reproductor.emisoraSeleccionada;
+
+                  return Card(
+                    elevation: 0,
+                    color: esSeleccionada
+                        ? Theme.of(context).colorScheme.inversePrimary
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: emisora.imagen ?? const Icon(Icons.radio),
+                        ),
                       ),
+                      title: Text(
+                        emisora.nombre,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () => reproductor.reproducirEmisora(emisora, reproductor.emisorasEscuchando),
                     ),
-                    IconButton(
-                      iconSize: 50,
-                      onPressed: () => reproductor.pasarEmisora(),
-                      icon: Icon(Icons.skip_next),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 20, left: 70, right: 70),
-                  child: ElevatedButton(onPressed: () => {/*TODO: Hacer*/}, child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.equalizer), Text(TextosApp.getTexto("ecualizador"))],),
-                  )),
-                )
-              ],
-            );
-          },
+                  );
+                },
+              ),
+            ),
+            // Espacio extra al final para que la barra del sistema no tape el último item
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
+          ],
         ),
-      ),
+      );
+    },
+    ),
     );
   }
 }
