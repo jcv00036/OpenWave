@@ -23,6 +23,11 @@ class GestorEmisoras extends ChangeNotifier{
         imagen = Image.memory(imagenBytes);
       }
       _emisoras.last.imagen = imagen;
+      if(mapa["etiquetas"] == null){
+        _emisoras.last.etiquetas = [];
+      }else{
+        _emisoras.last.etiquetas = mapa["etiquetas"].toString().split(",");
+      }
     });
   }
 
@@ -40,7 +45,7 @@ class GestorEmisoras extends ChangeNotifier{
     return List.of(_emisoras);
   }
 
-  Future<bool> agregarEmisora(String nombre, String url, Image imagen) async{
+  Future<bool> agregarEmisora(String nombre, String url, Image imagen, List<String> etiquetas) async{
     try {
       // Convierto la imagen a bytes
       final Completer<ui.Image> completer = Completer<ui.Image>();
@@ -57,8 +62,8 @@ class GestorEmisoras extends ChangeNotifier{
       final ByteData? byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
       final Uint8List imagenBytes = byteData!.buffer.asUint8List();
 
-      int id = await _database.insert("emisora", {"nombre": nombre, "url": url, "imagen": imagenBytes});
-      _emisoras.add(Emisora(id.toString(), nombre, url, [], []));
+      int id = await _database.insert("emisora", {"nombre": nombre, "url": url, "imagen": imagenBytes, "etiquetas": etiquetas.join(",")});
+      _emisoras.add(Emisora(id.toString(), nombre, url, [], etiquetas));
       _emisoras.last.imagen = imagen;
       notifyListeners();
       return true;

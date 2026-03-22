@@ -43,7 +43,9 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                   // Icono a la izquierda
                   title: Text(emisora.nombre),
                   // Nombre de la emisora
-                  subtitle: Text(emisora.url),
+                  subtitle: Text(emisora.etiquetas.isEmpty
+                                 ? emisora.url
+                                 : emisora.etiquetas.join(", "), overflow: TextOverflow.ellipsis,),
                   // URL
                   //onLongPress: , TODO: Modificar emisora
                   trailing: Row(
@@ -108,8 +110,8 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       MaterialPageRoute(
         builder: (context) {
           return PantallaAgregarEmisora(
-            agregarEmisora: (nombre, url, imagen) =>
-                manager.agregarEmisora(nombre, url, imagen),
+            agregarEmisora: (nombre, url, imagen, etiquetas) =>
+                manager.agregarEmisora(nombre, url, imagen, etiquetas),
           );
         },
       ),
