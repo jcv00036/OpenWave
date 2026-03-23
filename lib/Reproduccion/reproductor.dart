@@ -93,4 +93,6 @@ class Reproductor extends ChangeNotifier{
   bool get cargando => _cargando;
   bool get haySiguiente => _reproductor.currentIndex !+ 1 < _emisorasEscuchando.length;
   bool get hayAnterior => _reproductor.currentIndex != 0;
+
+  Stream<IcyMetadata?> get metadataStream => _reproductor.icyMetadataStream;
 }

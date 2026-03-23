@@ -15,5 +15,8 @@
   "ecualizador" : "Ecualizador",
   "reproductor_titulo" : "Reproduciendo ahora",
   "reproductor_titulo_cargando" : "Cargando emisora...",
-  "reproductor_titulo_cola" : "Cola de reproducción:"
+  "reproductor_titulo_cola" : "Cola de reproducción:",
+  "reproduciendo" : "Reproduciendo",
+  "etiquetas_emisora" : "Etiquetas de la emisora",
+  "error_etiqueta_incorrecta" : "La etiqueta introducida no es válida"
 }

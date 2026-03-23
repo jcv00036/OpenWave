@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:openwave/Nucleo/base_datos.dart';
-import 'package:openwave/Nucleo/emisora.dart';
-import 'package:openwave/Pantallas/Modales/agregar_emisora.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:openwave/Pantallas/Modales/pantalla_reproduccion.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_emisoras.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/l10n/textos_app.dart';
-import 'package:openwave/Nucleo/gestor_emisoras.dart';
 import 'package:provider/provider.dart';
+import 'package:marquee/marquee.dart';
 
 class OpenWavePantallaPrincipal extends StatefulWidget {
   const OpenWavePantallaPrincipal({super.key});
@@ -70,8 +68,42 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
                                 height: 60,
                                 fit: BoxFit.cover),
                             SizedBox(width: 10),
-                            Text(manager.emisoraSeleccionada.nombre, style: Theme.of(context).textTheme.titleMedium),
-                            Spacer(),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(manager.emisoraSeleccionada.nombre, style: Theme.of(context).textTheme.titleMedium),
+                                  StreamBuilder<IcyMetadata?>(
+                                    stream: manager.metadataStream,
+                                    builder: (context, snapshot) {
+                                      final metadata = snapshot.data;
+                                      final title = metadata?.info?.title ?? '';
+                                      if (title != '') {
+                                        return SizedBox(
+                                        height: 20, // Altura suficiente para el texto labelLarge
+                                        child: Marquee(
+                                          text: "${TextosApp.getTexto("reproduciendo")}: $title",
+                                          style: Theme.of(context).textTheme.labelLarge,
+                                          scrollAxis: Axis.horizontal,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          blankSpace: 50.0, // Espacio entre el final del texto y el inicio de la repetición
+                                          velocity: 30.0,   // Velocidad del movimiento
+                                          pauseAfterRound: const Duration(seconds: 2), // Pausa al completar una vuelta
+                                          accelerationDuration: const Duration(seconds: 1),
+                                          accelerationCurve: Curves.linear,
+                                          decelerationDuration: const Duration(milliseconds: 500),
+                                          decelerationCurve: Curves.easeOut,
+                                        ),
+                                      );
+                                      }
+                                      return Container(height: 0, padding: EdgeInsets.zero,);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+
                             IconButton(
                                 onPressed: manager.retrocederEmisora,
                                 icon: Icon(Icons.skip_previous),

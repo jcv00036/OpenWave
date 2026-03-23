@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:marquee/marquee.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
@@ -60,6 +62,52 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
+            ),
+            const SizedBox(height: 20),
+            StreamBuilder<IcyMetadata?>(
+              stream: reproductor.metadataStream,
+              builder: (context, snapshot) {
+                final metadata = snapshot.data;
+                final title = metadata?.info?.title ?? '';
+                final fullText = "${TextosApp.getTexto("reproduciendo")}: $title";
+                if (title != '') {
+                  return SizedBox(
+                    height: 20, // Altura suficiente para el texto labelLarge
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final textPainter = TextPainter(
+                          text: TextSpan(text: fullText, style: Theme.of(context).textTheme.labelLarge),
+                          maxLines: 1,
+                          textDirection: TextDirection.ltr,
+                        )..layout();
+
+                        // Si el texto mide menos que el ancho disponible, usamos un Text centrado
+                        if (textPainter.width < constraints.maxWidth) {
+                          return Center(
+                            child: Text(fullText, style: Theme.of(context).textTheme.labelLarge),
+                          );
+                        }
+
+                        // Si el texto es más largo (overflow), activamos el Marquee
+                        return Marquee(
+                          text: fullText,
+                          style: Theme.of(context).textTheme.labelLarge,
+                          scrollAxis: Axis.horizontal,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          blankSpace: 50.0,
+                          velocity: 30.0,
+                          pauseAfterRound: const Duration(seconds: 2),
+                          accelerationDuration: const Duration(seconds: 1),
+                          accelerationCurve: Curves.linear,
+                          decelerationDuration: const Duration(milliseconds: 500),
+                          decelerationCurve: Curves.easeOut,
+                        );
+                      },
+                    ),
+                  );
+                }
+                return Container(height: 0, padding: EdgeInsets.zero,);
+              },
             ),
 
             const SizedBox(height: 40),
