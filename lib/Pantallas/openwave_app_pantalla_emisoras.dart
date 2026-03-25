@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:openwave/Pantallas/Modales/agregar_emisora.dart';
+import 'package:openwave/Pantallas/openwave_app_pantalla_busqueda.dart';
+import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
 import '../Nucleo/emisora.dart';
@@ -20,6 +22,18 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(TextosApp.getTexto("titulo_inicio_emisoras")),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => OpenwaveAppPantallaBusqueda(buscandoEmisoras: true, editarEmisora: (emisora) => botonEditarPulsado(emisora),)));
+              },
+              icon: Icon(Icons.search)
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => botonAgregarPulsado(),
         shape: const CircleBorder(),
@@ -110,8 +124,14 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       MaterialPageRoute(
         builder: (context) {
           return PantallaAgregarEmisora(
-            agregarEmisora: (nombre, url, imagen, etiquetas) =>
-                manager.agregarEmisora(nombre, url, imagen, etiquetas),
+            agregarEmisora: (nombre, url, imagen, etiquetas) async {
+              if (await manager.agregarEmisora(nombre, url, imagen, etiquetas)){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("${TextosApp.getTexto("emisora_agregada"
+                      )} $nombre"))
+                );
+              }
+            },
           );
         },
       ),
@@ -125,10 +145,25 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       MaterialPageRoute(
         builder: (context) {
           return PantallaAgregarEmisora(
-            agregarEmisora: (nombre, url, imagen, etiquetas) =>
-                manager.editarEmisora(emisora, nombre, url, imagen, etiquetas),
+            agregarEmisora: (nombre, url, imagen, etiquetas) async {
+              if (await manager.editarEmisora(emisora, nombre, url, imagen, etiquetas)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text("${TextosApp.getTexto("emisora_editada"
+                        )} ${emisora.nombre}"))
+                );
+              }
+            },
             emisora: emisora,
-            eliminarEmisora: (emisora) => manager.eliminarEmisora(emisora),);
+            eliminarEmisora: (emisora) async {
+              if (await manager.eliminarEmisora(emisora)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text("${TextosApp.getTexto("emisora_eliminada"
+                        )} ${emisora.nombre}"))
+                );
+              }
+            },);
           },
       ),
     );

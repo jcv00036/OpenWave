@@ -1,6 +1,7 @@
 {
   "nombre_app" : "OpenWave",
-  "titulo_inicio" : "Emisoras",
+  "titulo_inicio_emisoras" : "Emisoras",
+  "titulo_inicio_listas" : "Listas de reproducción",
   "agregar_emisora" : "Agregar emisora",
   "editar_emisora" : "Editar emisora",
   "eliminar_emisora" : "Borrar emisora",
@@ -15,5 +16,17 @@
   "ecualizador" : "Ecualizador",
   "reproductor_titulo" : "Reproduciendo ahora",
   "reproductor_titulo_cargando" : "Cargando emisora...",
-  "reproductor_titulo_cola" : "Cola de reproducción:"
+  "reproductor_titulo_cola" : "Cola de reproducción:",
+  "reproduciendo" : "Reproduciendo",
+  "etiquetas_emisora" : "Etiquetas de la emisora",
+  "error_etiqueta_incorrecta" : "La etiqueta introducida no es válida",
+  "busqueda_emisoras" : "Buscar emisoras",
+  "pista_busqueda_emisoras" : "Nombre de la emisora o etiquetas...",
+  "busqueda_listas" : "Buscar listas",
+  "pista_busqueda_listas" : "Nombre de la lista...",
+  "filtros_no_resultados" : "El filtro no ha devuelto resultados",
+  "busqueda_sin_filtro" : "Escriba algo en el campo de texto para buscar",
+  "emisora_eliminada" : "Se ha eliminado la emisora",
+  "emisora_editada" : "Se ha modificado la emisora",
+  "emisora_agregada" : "Se ha añadido la emisora"
 }

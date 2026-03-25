@@ -23,7 +23,9 @@ class GestorEmisoras extends ChangeNotifier{
         imagen = Image.memory(imagenBytes);
       }
       _emisoras.last.imagen = imagen;
-      if(mapa["etiquetas"] == null){
+      if(mapa["etiquetas"] == null) {
+        _emisoras.last.etiquetas = [];
+      }else if(mapa["etiquetas"].toString().isEmpty){
         _emisoras.last.etiquetas = [];
       }else{
         _emisoras.last.etiquetas = mapa["etiquetas"].toString().split(",");
@@ -107,14 +109,15 @@ class GestorEmisoras extends ChangeNotifier{
     }
   }
 
-  Future<void> eliminarEmisora(Emisora emisora) async {
+  Future<bool> eliminarEmisora(Emisora emisora) async {
     try{
       await _database.delete("emisora", where: "id = ?", whereArgs: [emisora.id]);
       _emisoras.remove(emisora);
       notifyListeners();
+      return true;
     }catch(e){
       print("Error al eliminar emisora: $e");
-      return;
+      return false;
     }
   }
 }
