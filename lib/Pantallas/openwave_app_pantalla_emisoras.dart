@@ -124,8 +124,14 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       MaterialPageRoute(
         builder: (context) {
           return PantallaAgregarEmisora(
-            agregarEmisora: (nombre, url, imagen, etiquetas) =>
-                manager.agregarEmisora(nombre, url, imagen, etiquetas),
+            agregarEmisora: (nombre, url, imagen, etiquetas) async {
+              if (await manager.agregarEmisora(nombre, url, imagen, etiquetas)){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("${TextosApp.getTexto("emisora_agregada"
+                      )} $nombre"))
+                );
+              }
+            },
           );
         },
       ),
@@ -139,10 +145,25 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       MaterialPageRoute(
         builder: (context) {
           return PantallaAgregarEmisora(
-            agregarEmisora: (nombre, url, imagen, etiquetas) =>
-                manager.editarEmisora(emisora, nombre, url, imagen, etiquetas),
+            agregarEmisora: (nombre, url, imagen, etiquetas) async {
+              if (await manager.editarEmisora(emisora, nombre, url, imagen, etiquetas)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text("${TextosApp.getTexto("emisora_editada"
+                        )} ${emisora.nombre}"))
+                );
+              }
+            },
             emisora: emisora,
-            eliminarEmisora: (emisora) => manager.eliminarEmisora(emisora),);
+            eliminarEmisora: (emisora) async {
+              if (await manager.eliminarEmisora(emisora)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text("${TextosApp.getTexto("emisora_eliminada"
+                        )} ${emisora.nombre}"))
+                );
+              }
+            },);
           },
       ),
     );

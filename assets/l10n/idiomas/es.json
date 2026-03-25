@@ -25,5 +25,8 @@
   "busqueda_listas" : "Buscar listas",
   "pista_busqueda_listas" : "Nombre de la lista...",
   "filtros_no_resultados" : "El filtro no ha devuelto resultados",
-  "busqueda_sin_filtro" : "Escriba algo en el campo de texto para buscar"
+  "busqueda_sin_filtro" : "Escriba algo en el campo de texto para buscar",
+  "emisora_eliminada" : "Se ha eliminado la emisora",
+  "emisora_editada" : "Se ha modificado la emisora",
+  "emisora_agregada" : "Se ha añadido la emisora"
 }
