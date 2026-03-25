@@ -4,7 +4,6 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BaseDatos {
-  static final BaseDatos _instancia = BaseDatos._constructorSingleton();
   BaseDatos._constructorSingleton();
 
   static Database? _database;

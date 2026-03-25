@@ -6,8 +6,6 @@ import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
-import '../../Nucleo/emisora.dart';
-
 class PantallaReproduccion extends StatefulWidget {
   const PantallaReproduccion({super.key});
 
@@ -178,10 +176,10 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
           DraggableScrollableSheet(
               controller: _sheetController,
               initialChildSize: 0.25,
-              minChildSize: 0.12,
+              minChildSize: 0.25,
               maxChildSize: 0.85,
               snap: true,
-              snapSizes: const [0.12, 0.25, 0.85],
+              snapSizes: const [0.25, 0.85],
               builder: (context, scrollController) {
                 return Container(
                   decoration: BoxDecoration(

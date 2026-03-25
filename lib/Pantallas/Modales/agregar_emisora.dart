@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../Nucleo/emisora.dart';
-import '../../Nucleo/gestor_emisoras.dart';
 import '../../constantes.dart';
 import '../../l10n/textos_app.dart';
 
@@ -56,6 +56,61 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
     super.dispose();
   }
 
+  Future<void> _seleccionarYRecortarImagen() async {
+    final picker = ImagePicker();
+    final XFile? fichero = await picker.pickImage(source: ImageSource.gallery);
+
+    if (fichero != null) {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: fichero.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 80, // Compresión para evitar "Row too big"
+        maxWidth: 512, // Límite de resolución razonable
+        maxHeight: 512,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: TextosApp.getTexto("recortar_imagen"),
+            toolbarColor: Theme.of(context).colorScheme.primary,
+            toolbarWidgetColor: Theme.of(context).colorScheme.onPrimary,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+          ),
+          IOSUiSettings(
+            title: TextosApp.getTexto("recortar_imagen"),
+            aspectRatioLockEnabled: true,
+          ),
+        ],
+      );
+
+      // Compruebo que el tamaño de la imagen no sea mayor a 1.8Mb
+      if (croppedFile != null){
+        final bytes = await croppedFile.readAsBytes();
+        final size = bytes.lengthInBytes;
+        if (size > 1800000) {
+          // Muestro un diálogo de error
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(TextosApp.getTexto("imagen_muy_grande")),
+            )
+          );
+          return;
+        }
+      }
+
+      if (croppedFile != null) {
+        setState(() {
+          imagen = Image.file(
+            File(croppedFile.path),
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+          );
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,29 +126,16 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                 child: Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    Image(image: imagen.image, width: 200, height: 200),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image(image: imagen.image, width: 200, height: 200, fit: BoxFit.cover),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: FloatingActionButton(
                         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                         foregroundColor: Theme.of(context).colorScheme.primary,
-                        onPressed: () {
-                          // Cargamos la imagen que introduce el usuario con el image_picker
-                          final picker = ImagePicker();
-                          picker.pickImage(source: ImageSource.gallery).then((
-                            value,
-                          ) {
-                            if (value != null) {
-                              setState(() {
-                                imagen = Image.file(
-                                  File(value.path),
-                                  width: 200,
-                                  height: 200,
-                                );
-                              });
-                            }
-                          });
-                        },
+                        onPressed: _seleccionarYRecortarImagen,
                         child: Icon(Icons.add_a_photo),
                       ),
                     ),
@@ -318,7 +360,6 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   }
 
   void agregarEtiqueta(String etiqueta, BuildContext context) {
-    bool agregada = false;
     bool copia = false;
     for (String e in etiquetas) {
       if (e == etiqueta) copia = true;
@@ -343,7 +384,6 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
     }
     setState(() {
       etiquetas.add(etiqueta);
-      agregada = true;
       // Borramos el buffer
       buffer = "";
       _etiquetasController.clear();

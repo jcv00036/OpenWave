@@ -28,5 +28,7 @@
   "busqueda_sin_filtro" : "Escriba algo en el campo de texto para buscar",
   "emisora_eliminada" : "Se ha eliminado la emisora",
   "emisora_editada" : "Se ha modificado la emisora",
-  "emisora_agregada" : "Se ha añadido la emisora"
+  "emisora_agregada" : "Se ha añadido la emisora",
+  "recortar_imagen" : "Recortar imagen",
+  "imagen_muy_grande" : "La imagen escogida es demasiado grande"
 }
