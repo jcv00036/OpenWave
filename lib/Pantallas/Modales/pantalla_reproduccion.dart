@@ -183,7 +183,7 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
               builder: (context, scrollController) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
                     boxShadow: [
                       BoxShadow(
@@ -242,7 +242,17 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                                     emisora.nombre,
                                     style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  onTap: () => reproductor.reproducirEmisora(emisora, reproductor.emisorasEscuchando),
+                                  onTap: () {
+                                    reproductor.reproducirEmisora(emisora, reproductor.emisorasEscuchando);
+                                    if (_sheetController.size > 0.25){
+                                      // Cierro el cajón
+                                      _sheetController.animateTo(
+                                        0.25,
+                                        duration: const Duration(milliseconds: 300),
+                                        curve: Curves.easeOut,
+                                      );
+                                    }
+                                  },
                                 ),
                               );
                             },
