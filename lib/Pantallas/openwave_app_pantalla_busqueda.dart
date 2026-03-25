@@ -20,6 +20,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
 
   final TextEditingController _busquedaController = TextEditingController();
   List<Emisora> _emisoras_visibles = <Emisora>[];
+  bool _promptVacio = true;
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +50,16 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
   }
 
   void buscar(String filtro){
+    bool filtroVacio = filtro.toLowerCase().trim() == "";
     setState(() {
+      if(filtroVacio) {
+        _promptVacio = true;
+      } else {
+        _promptVacio = false;
+      }
+
       if (widget.buscandoEmisoras) {
-        _emisoras_visibles = buscarEmisoras(filtro);
+        _emisoras_visibles = !filtroVacio ? buscarEmisoras(filtro) : [];
       }else{
         //FIXME: Añadir la funcionalidad de buscar listas
       }
@@ -60,10 +68,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
 
   Widget listaEmisorasFiltrada(){
     if (_emisoras_visibles.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 30, bottom: 30),
-        child: Text(TextosApp.getTexto("filtros_no_resultados")),
-      );
+      return pantallaBusquedaVacia();
     }else{
       return ListView.builder(
         itemCount: _emisoras_visibles.length,
@@ -142,5 +147,12 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
     var emisorasFiltradas = emisoras.where((emisora) => emisora.nombre.toLowerCase().contains(filtro.toLowerCase())).toSet();
     emisorasFiltradas.addAll(emisoras.where((emisora) => emisora.etiquetas.any((etiqueta) => etiqueta.toLowerCase().contains(filtro.toLowerCase()))));
     return emisorasFiltradas.toList();
+  }
+
+  Widget pantallaBusquedaVacia(){
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, bottom: 30),
+      child: Text(TextosApp.getTexto(_promptVacio ? "busqueda_sin_filtro" : "filtros_no_resultados")),
+    );
   }
 }

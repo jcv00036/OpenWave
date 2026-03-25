@@ -24,5 +24,6 @@
   "pista_busqueda_emisoras" : "Nombre de la emisora o etiquetas...",
   "busqueda_listas" : "Buscar listas",
   "pista_busqueda_listas" : "Nombre de la lista...",
-  "filtros_no_resultados" : "El filtro no ha devuelto resultados"
+  "filtros_no_resultados" : "El filtro no ha devuelto resultados",
+  "busqueda_sin_filtro" : "Escriba algo en el campo de texto para buscar"
 }
