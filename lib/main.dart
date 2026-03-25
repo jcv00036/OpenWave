@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:openwave/Nucleo/gestor_emisoras.dart';
 import 'package:openwave/openwave_app.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:sqflite/sqflite.dart';

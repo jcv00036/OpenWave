@@ -52,7 +52,11 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                   leading: SizedBox(
                     width: 40,
                     height: 40,
-                    child: emisora.imagen,
+                    child: Image(
+                        width: 40,
+                        height: 40,
+                        image: emisora.imagen!.image
+                    ),
                   ),
                   // Icono a la izquierda
                   title: Text(emisora.nombre),
