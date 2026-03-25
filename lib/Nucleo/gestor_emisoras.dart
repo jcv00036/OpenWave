@@ -23,7 +23,9 @@ class GestorEmisoras extends ChangeNotifier{
         imagen = Image.memory(imagenBytes);
       }
       _emisoras.last.imagen = imagen;
-      if(mapa["etiquetas"] == null){
+      if(mapa["etiquetas"] == null) {
+        _emisoras.last.etiquetas = [];
+      }else if(mapa["etiquetas"].toString().isEmpty){
         _emisoras.last.etiquetas = [];
       }else{
         _emisoras.last.etiquetas = mapa["etiquetas"].toString().split(",");
