@@ -1,6 +1,7 @@
 {
   "nombre_app" : "OpenWave",
-  "titulo_inicio" : "Emisoras",
+  "titulo_inicio_emisoras" : "Emisoras",
+  "titulo_inicio_listas" : "Listas de reproducción",
   "agregar_emisora" : "Agregar emisora",
   "editar_emisora" : "Editar emisora",
   "eliminar_emisora" : "Borrar emisora",

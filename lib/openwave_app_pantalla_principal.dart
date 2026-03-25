@@ -42,10 +42,6 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(TextosApp.getTexto("titulo_inicio")),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
       body: Column(
         children: [
           Expanded(
@@ -89,7 +85,7 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal> w
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           blankSpace: 50.0, // Espacio entre el final del texto y el inicio de la repetición
                                           velocity: 30.0,   // Velocidad del movimiento
-                                          pauseAfterRound: const Duration(seconds: 2), // Pausa al completar una vuelta
+                                          pauseAfterRound: const Duration(seconds: 0), // Pausa al completar una vuelta
                                           accelerationDuration: const Duration(seconds: 1),
                                           accelerationCurve: Curves.linear,
                                           decelerationDuration: const Duration(milliseconds: 500),
