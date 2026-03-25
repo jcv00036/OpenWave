@@ -16,36 +16,21 @@ class Reproductor extends ChangeNotifier{
   Reproductor() : super();
 
   void pasarEmisora() async{
-    _cargando = true;
-    // Informo de que se está cargando la emisora
-    if (_reproductor.currentIndex !+ 1 < _emisorasEscuchando.length) _emisoraSeleccionada = _emisorasEscuchando[_reproductor.currentIndex !+ 1];
-    notifyListeners();
-    await _reproductor.seekToNext();
-    if (_reproductor.currentIndex != null) {
-      _emisoraSeleccionada = _emisorasEscuchando[_reproductor.currentIndex!];
-      _cargando = false;
-      notifyListeners();
+    // Compruebo el siguiente índice
+    int siguiente = _reproductor.currentIndex! + 1;
+    if (siguiente < _emisorasEscuchando.length) {
+      reproducirEmisora(_emisorasEscuchando[siguiente], _emisorasEscuchando);
     }else{
-      _cargando = false;
-      _reproductor.stop();
-      notifyListeners();
+      reproducirEmisora(_emisorasEscuchando[0], _emisorasEscuchando);
     }
   }
 
   void retrocederEmisora() async {
-    _cargando = true;
-    // Informo de que se está cargando la emisora
-    if (hayAnterior) _emisoraSeleccionada = _emisorasEscuchando[_reproductor.currentIndex! - 1];
-    notifyListeners();
-    await _reproductor.seekToPrevious();
-    if (_reproductor.currentIndex != null) {
-      _emisoraSeleccionada = _emisorasEscuchando[_reproductor.currentIndex!];
-      _cargando = false;
-      notifyListeners();
+    int anterior = _reproductor.currentIndex! - 1;
+    if (anterior >= 0){
+      reproducirEmisora(_emisorasEscuchando[anterior], _emisorasEscuchando);
     }else{
-      _cargando = false;
-      _reproductor.stop();
-      notifyListeners();
+      reproducirEmisora(_emisorasEscuchando.last, _emisorasEscuchando);
     }
   }
 
@@ -59,19 +44,22 @@ class Reproductor extends ChangeNotifier{
   }
 
   void reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
-    _cargando = true;
-    notifyListeners();
 
     var indiceEmisora = emisoras.indexOf(emisora);
     if (indiceEmisora == -1) {
       return;
     }
+
+    _emisoraSeleccionada = emisora;
+    _emisorasEscuchando = emisoras;
+
+    _cargando = true;
+    notifyListeners();
     await _reproductor.setAudioSources(
       emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
       initialIndex: indiceEmisora,
     );
-    _emisorasEscuchando = emisoras;
-    _emisoraSeleccionada = emisora;
+
     _cargando = false;
     _reproductor.play();
     notifyListeners();
