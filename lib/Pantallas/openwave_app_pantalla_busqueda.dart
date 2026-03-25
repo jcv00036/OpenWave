@@ -36,6 +36,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
                     hintText: widget.buscandoEmisoras ? TextosApp.getTexto("pista_busqueda_emisoras") : TextosApp.getTexto("pista_busqueda_emisoras"),
                     onChanged: (value) => buscar(value),
                     onSubmitted: (value) => buscar(value),
+                    autoFocus: true,
           ),
           SizedBox(height: 16,),
           // Lista de emisoras o listas
@@ -59,7 +60,10 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
 
   Widget listaEmisorasFiltrada(){
     if (_emisoras_visibles.isEmpty) {
-      return Text("filtros_no_resultados");
+      return Padding(
+        padding: const EdgeInsets.only(top: 30, bottom: 30),
+        child: Text(TextosApp.getTexto("filtros_no_resultados")),
+      );
     }else{
       return ListView.builder(
         itemCount: _emisoras_visibles.length,

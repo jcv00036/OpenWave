@@ -19,5 +19,10 @@
   "reproductor_titulo_cola" : "Cola de reproducción:",
   "reproduciendo" : "Reproduciendo",
   "etiquetas_emisora" : "Etiquetas de la emisora",
-  "error_etiqueta_incorrecta" : "La etiqueta introducida no es válida"
+  "error_etiqueta_incorrecta" : "La etiqueta introducida no es válida",
+  "busqueda_emisoras" : "Buscar emisoras",
+  "pista_busqueda_emisoras" : "Nombre de la emisora o etiquetas...",
+  "busqueda_listas" : "Buscar listas",
+  "pista_busqueda_listas" : "Nombre de la lista...",
+  "filtros_no_resultados" : "El filtro no ha devuelto resultados"
 }
