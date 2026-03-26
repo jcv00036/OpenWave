@@ -26,12 +26,28 @@ class GestorListas extends ChangeNotifier{
   Future<void> init() async{
     // Carga la base de datos
     _database = await BaseDatos.db;
+    // Comprueba si las tablas necesarias existen y si no las crea
+    await _database.execute('CREATE TABLE IF NOT EXISTS lista ('
+                              'id INTEGER,'
+                              'nombre TEXT NOT NULL,'
+                              'permanente INTEGER CONSTRAINT ck_permanente_lista CHECK (permanente == 0 OR permanente == 1),'
+                              'CONSTRAINT pk_lista PRIMARY KEY (id AUTOINCREMENT))');
+    await _database.execute('CREATE TABLE IF NOT EXISTS "emisora_lista" ('
+                              '"id_emisora"	INTEGER,'
+                              '"id_lista"	INTEGER,'
+                              'CONSTRAINT "pk_emisora_lista" PRIMARY KEY("id_emisora","id_lista"),'
+                              'FOREIGN KEY("id_emisora") REFERENCES "emisora"("id"),'
+                              'FOREIGN KEY("id_lista") REFERENCES "lista"("id"))');
     await _cargarListas();
     notifyListeners();
   }
   
   Future<void> _cargarListas() async {
     var listaListasRaw = await _database.query("lista");
+    if (listaListasRaw.isEmpty) {
+      await _database.insert("lista", {"nombre": "lista_favoritos", "permanente": 1});
+      _listas.add(ListaReproduccion("1", TextosApp.getTexto("lista_favoritos"), [], true));
+    }
     listaListasRaw.forEach((Map<String, Object?> mapa) async {
       // Compongo la emisora
       bool permanente = mapa["permanente"] == 1;

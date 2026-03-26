@@ -41,7 +41,10 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
             itemBuilder: (context, index) {
               final lista = manager.listas[index];
               return ListTile(
+                leading: Icon(Icons.list),
                 title: Text(lista.nombre),
+                subtitle: Text(lista.emisoras.isEmpty ? TextosApp.getTexto("lista_vacia") : "${lista.emisoras.length} ${TextosApp.getTexto("emisoras_nombre_plural")}"),
+
               );
             }
           );
@@ -55,6 +58,5 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
   }
 
   void botonBuscarPulsado(){
-
   }
 }
