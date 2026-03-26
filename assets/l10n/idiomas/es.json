@@ -32,5 +32,7 @@
   "emisora_agregada" : "Se ha añadido la emisora",
   "recortar_imagen" : "Recortar imagen",
   "imagen_muy_grande" : "La imagen escogida es demasiado grande",
-  "lista_favoritos" : "Emisoras favoritas"
+  "lista_favoritos" : "Emisoras favoritas",
+  "lista_vacia" : "Lista vacía",
+  "emisoras_nombre_plural" : "emisoras"
 }
