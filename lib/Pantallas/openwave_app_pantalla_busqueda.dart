@@ -9,9 +9,10 @@ import '../Nucleo/gestor_emisoras.dart';
 import '../constantes.dart';
 
 class OpenwaveAppPantallaBusqueda extends StatefulWidget {
-  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline = false, this.agregarEmisora, this.agregarEmisoraCopia});
+  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline = false, this.agregarEmisora, this.agregarEmisoraCopia, this.listaEmisorasBuscar});
   final buscandoEmisoras;
   final buscandoOnline;
+  final List<Emisora>? listaEmisorasBuscar;
 
   final Function(Emisora)? editarEmisora;
   final Function(String, String, String, List<String>)? agregarEmisora;
@@ -154,7 +155,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
   }
 
   List<Emisora> buscarEmisoras(String filtro){
-    var emisoras = Provider.of<GestorEmisoras>(context, listen: false).emisoras;
+    var emisoras = widget.listaEmisorasBuscar ?? Provider.of<GestorEmisoras>(context, listen: false).emisoras;
     var emisorasFiltradas = emisoras.where((emisora) => emisora.nombre.toLowerCase().contains(filtro.toLowerCase())).toSet();
     emisorasFiltradas.addAll(emisoras.where((emisora) => emisora.etiquetas.any((etiqueta) => etiqueta.toLowerCase().contains(filtro.toLowerCase()))));
     return emisorasFiltradas.toList();
