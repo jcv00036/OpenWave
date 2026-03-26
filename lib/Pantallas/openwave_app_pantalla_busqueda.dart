@@ -150,7 +150,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
   }
 
   Widget listaEmisorasEncontradasOnline(){
-    return ListaEmisorasRadiobrowser(filtro: _filtroRadioBrowser ?? "", agregarEmisora: widget.agregarEmisoraCopia!,);
+    return ListaEmisorasRadiobrowser(filtro: _filtroRadioBrowser ?? "", agregarEmisora: widget.agregarEmisoraCopia!, context : context);
   }
 
   List<Emisora> buscarEmisoras(String filtro){

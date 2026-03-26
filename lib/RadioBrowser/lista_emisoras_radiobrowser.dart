@@ -8,10 +8,11 @@ import 'package:openwave/l10n/textos_app.dart';
 import '../Nucleo/emisora.dart';
 
 class ListaEmisorasRadiobrowser extends StatefulWidget {
-  const ListaEmisorasRadiobrowser({super.key, required this.filtro, required this.agregarEmisora});
+  const ListaEmisorasRadiobrowser({super.key, required this.filtro, required this.agregarEmisora, required this.context});
 
   final String filtro;
   final String urlApi = API_RADIOBROWSER;
+  final BuildContext context;
 
   final Function(Emisora) agregarEmisora;
 
@@ -79,7 +80,9 @@ class _ListaEmisorasRadiobrowserState extends State<ListaEmisorasRadiobrowser> {
                     subtitle: Text(emisora.url, overflow: TextOverflow.ellipsis,),
                     //Botón de añadir
                     trailing: ElevatedButton(
-                      onPressed: () => widget.agregarEmisora(emisora),
+                      onPressed: () {
+                        widget.agregarEmisora(emisora);
+                      },
                       child:  SizedBox(
                         width: 24,
                         height: 24,
