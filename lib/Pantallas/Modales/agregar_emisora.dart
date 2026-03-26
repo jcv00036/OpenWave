@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:openwave/Pantallas/openwave_app_pantalla_busqueda.dart';
 
 import '../../Nucleo/emisora.dart';
 import '../../constantes.dart';
@@ -15,11 +16,13 @@ class PantallaAgregarEmisora extends StatefulWidget {
     required this.agregarEmisora,
     emisora,
     this.eliminarEmisora,
+    this.agregarEmisoraCopia
   }) : _emisoraEditar = emisora,
        _modoEditar = emisora != null;
 
   final Function(String, String, Image, List<String>) agregarEmisora;
   final Function(Emisora)? eliminarEmisora;
+  final Function(Emisora)? agregarEmisoraCopia;
   final Emisora? _emisoraEditar;
   late final _modoEditar;
 
@@ -84,15 +87,13 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
       );
 
       // Compruebo que el tamaño de la imagen no sea mayor a 1.8Mb
-      if (croppedFile != null){
+      if (croppedFile != null) {
         final bytes = await croppedFile.readAsBytes();
         final size = bytes.lengthInBytes;
         if (size > 1800000) {
           // Muestro un diálogo de error
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(TextosApp.getTexto("imagen_muy_grande")),
-            )
+            SnackBar(content: Text(TextosApp.getTexto("imagen_muy_grande"))),
           );
           return;
         }
@@ -115,6 +116,23 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_titulo)),
+      floatingActionButton: widget._modoEditar ? null : FloatingActionButton(
+        shape: const CircleBorder(),
+        onPressed: () {
+          // Abrimos la pantalla de búsqueda
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OpenwaveAppPantallaBusqueda(
+                buscandoEmisoras: true,
+                buscandoOnline: true,
+                agregarEmisoraCopia: widget.agregarEmisoraCopia,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.search),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -128,15 +146,32 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image(image: imagen.image, width: 200, height: 200, fit: BoxFit.cover),
+                      child: Image(
+                        image: imagen.image,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
-                        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                        foregroundColor: Theme.of(context).colorScheme.primary,
-                        onPressed: _seleccionarYRecortarImagen,
-                        child: Icon(Icons.add_a_photo),
+                      child: SizedBox(
+                        width: 55,
+                        height: 55,
+                        child: IconButton.filled(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStateProperty.all(
+                              Theme.of(context).colorScheme.inversePrimary,
+                            ),
+                            foregroundColor: WidgetStateProperty.all(
+                              Theme.of(context).colorScheme.primary,
+                            ),
+                            iconSize: WidgetStateProperty.all(25),
+                            iconAlignment: IconAlignment.start,
+                          ),
+                          onPressed: _seleccionarYRecortarImagen,
+                          icon: Icon(Icons.add_a_photo),
+                        ),
                       ),
                     ),
                   ],

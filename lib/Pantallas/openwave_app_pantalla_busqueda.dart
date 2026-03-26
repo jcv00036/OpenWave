@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/emisora.dart';
+import 'package:openwave/RadioBrowser/lista_emisoras_radiobrowser.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
@@ -7,10 +8,13 @@ import 'package:provider/provider.dart';
 import '../Nucleo/gestor_emisoras.dart';
 
 class OpenwaveAppPantallaBusqueda extends StatefulWidget {
-  OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora});
+  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline, this.agregarEmisora, this.agregarEmisoraCopia});
   final buscandoEmisoras;
+  final buscandoOnline;
 
   final Function(Emisora)? editarEmisora;
+  final Function(String, String, String, List<String>)? agregarEmisora;
+  final Function(Emisora)? agregarEmisoraCopia;
 
   @override
   State<OpenwaveAppPantallaBusqueda> createState() => _OpenwaveAppPantallaBusquedaState();
@@ -21,6 +25,8 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
   final TextEditingController _busquedaController = TextEditingController();
   List<Emisora> _emisoras_visibles = <Emisora>[];
   bool _promptVacio = true;
+
+  String? _filtroRadioBrowser;
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +41,14 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
           SearchBar(controller: _busquedaController,
                     leading: Icon(Icons.search),
                     hintText: widget.buscandoEmisoras ? TextosApp.getTexto("pista_busqueda_emisoras") : TextosApp.getTexto("pista_busqueda_emisoras"),
-                    onChanged: (value) => buscar(value),
-                    onSubmitted: (value) => buscar(value),
+                    onChanged: (value) => widget.buscandoOnline ? setState(() => _filtroRadioBrowser = value) : buscar(value),
+                    onSubmitted: (value) => widget.buscandoOnline ? setState(() => _filtroRadioBrowser = value) : buscar(value),
                     autoFocus: true,
           ),
           SizedBox(height: 16,),
           // Lista de emisoras o listas
           Expanded(
-            child: widget.buscandoEmisoras ? listaEmisorasFiltrada() : Text("busqueda_listas"), //TODO: Añadir funcionalidad
+            child: widget.buscandoEmisoras ? widget.buscandoOnline ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : Text("busqueda_listas"), //TODO: Añadir funcionalidad
           )
         ]
       )
@@ -140,6 +146,10 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
         }
       );
     }
+  }
+
+  Widget listaEmisorasEncontradasOnline(){
+    return ListaEmisorasRadiobrowser(filtro: _filtroRadioBrowser ?? "", agregarEmisora: widget.agregarEmisoraCopia!,);
   }
 
   List<Emisora> buscarEmisoras(String filtro){

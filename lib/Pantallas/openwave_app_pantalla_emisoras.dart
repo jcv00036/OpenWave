@@ -136,6 +136,17 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                 );
               }
             },
+            agregarEmisoraCopia: (emisora) async {
+              if (await manager.agregarEmisoraCopia(emisora)){
+                // Vuelve a la pantalla de inicio
+                Navigator.pop(context);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("${TextosApp.getTexto("emisora_agregada"
+                    )} ${emisora.nombre}"))
+                );
+              }
+            }
           );
         },
       ),

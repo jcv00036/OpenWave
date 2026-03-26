@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constantes.dart';
+
 class Emisora{
   String _nombre;
   String _url;
@@ -9,6 +11,21 @@ class Emisora{
   Image? _imagen;
 
   Emisora(this._id, this._nombre, this._url, this._metadatos, this._etiquetas);
+
+  factory Emisora.fromJson(Map<String, dynamic> json){
+    var instancia = Emisora("0", json["name"].toString(), json["url"].toString(), [], json["tags"].toString().split(","));
+    var uriImagen = Uri.parse(json["favicon"].toString());
+    if (!uriImagen.hasEmptyPath) {
+      // Primero compruebo si la imagen es de un formato soportado por Image
+      if (uriImagen.path.endsWith(".png") ||
+          uriImagen.path.endsWith(".jpg") ||
+          uriImagen.path.endsWith(".jpeg")) {
+        instancia.imagen = Image.network(uriImagen.toString(), errorBuilder: (context, error, stackTrace) => Image.asset(IMAGEN_EMISORA_POR_DEFECTO),);
+      }
+    }
+    return instancia;
+  }
+
 
   List<String> get etiquetas => List.of(_etiquetas);
 

@@ -75,6 +75,26 @@ class GestorEmisoras extends ChangeNotifier{
     }
   }
 
+  Future<bool> agregarEmisoraCopia(Emisora emisora) async {
+    try {
+      // Si tiene una imagen, la convierto a jpg comprimido 512x512 como el resto de las emisoras
+      if (emisora.imagen != null) {
+
+      }
+
+      // Añade la emisora a la lista de emisoras
+      _emisoras.add(emisora);
+
+      // Añade la emisora a la base de datos
+      _database.insert("emisora", emisora.toMap());
+      notifyListeners();
+      return true;
+    }catch (e) {
+      print("Error al agregar emisora: $e");
+      return false;
+    }
+  }
+
   Future<bool> editarEmisora(Emisora emisora, String nombre, String url, Image imagen, List<String> etiquetas) async {
     try {
       // Convierto la imagen a bytes
