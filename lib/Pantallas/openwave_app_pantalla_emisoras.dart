@@ -67,7 +67,7 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                                  ? emisora.url
                                  : emisora.etiquetas.join(", "), overflow: TextOverflow.ellipsis,),
                   // URL
-                  //onLongPress: , TODO: Modificar emisora
+                  onLongPress: () => botonEditarPulsado(emisora), 
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
