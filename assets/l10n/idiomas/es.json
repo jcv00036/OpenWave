@@ -13,6 +13,7 @@
   "boton_aceptar" : "Aceptar",
   "boton_cancelar" : "Cancelar",
   "nav_emisoras" : "Emisoras",
+  "nav_listas" : "Listas",
   "ecualizador" : "Ecualizador",
   "reproductor_titulo" : "Reproduciendo ahora",
   "reproductor_titulo_cargando" : "Cargando emisora...",
@@ -30,5 +31,6 @@
   "emisora_editada" : "Se ha modificado la emisora",
   "emisora_agregada" : "Se ha añadido la emisora",
   "recortar_imagen" : "Recortar imagen",
-  "imagen_muy_grande" : "La imagen escogida es demasiado grande"
+  "imagen_muy_grande" : "La imagen escogida es demasiado grande",
+  "lista_favoritos" : "Emisoras favoritas"
 }

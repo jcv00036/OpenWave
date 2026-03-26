@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:openwave/Pantallas/Modales/pantalla_reproduccion.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_emisoras.dart';
+import 'package:openwave/Pantallas/openwave_app_pantalla_listas.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
@@ -22,7 +23,7 @@ class OpenWavePantallaPrincipal extends StatefulWidget {
 
 class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal>
     with WidgetsBindingObserver {
-  final _pantallas = <Widget>[OpenwaveAppPantallaEmisoras(), Placeholder()];
+  final _pantallas = <Widget>[OpenwaveAppPantallaEmisoras(), OpenwaveAppPantallaListas()];
 
   int _indice = 0;
 
@@ -185,8 +186,8 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal>
             label: TextosApp.getTexto("nav_emisoras"),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.question_mark),
-            label: "Placeholder",
+            icon: Icon(Icons.list),
+            label: TextosApp.getTexto("nav_listas"),
           ),
           //TODO: Añadir los menús que falten
         ],

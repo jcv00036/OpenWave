@@ -50,7 +50,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
           SizedBox(height: 16,),
           // Lista de emisoras o listas
           Expanded(
-            child: widget.buscandoEmisoras ? widget.buscandoOnline ?? false ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : Text("busqueda_listas"), //TODO: Añadir funcionalidad
+            child: widget.buscandoEmisoras ? widget.buscandoOnline ?? false ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : Text(TextosApp.getTexto("busqueda_listas")), //TODO: Añadir funcionalidad
           )
         ]
       )
