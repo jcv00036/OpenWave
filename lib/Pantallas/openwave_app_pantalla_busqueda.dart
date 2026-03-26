@@ -6,9 +6,10 @@ import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
 import '../Nucleo/gestor_emisoras.dart';
+import '../constantes.dart';
 
 class OpenwaveAppPantallaBusqueda extends StatefulWidget {
-  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline, this.agregarEmisora, this.agregarEmisoraCopia});
+  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline = false, this.agregarEmisora, this.agregarEmisoraCopia});
   final buscandoEmisoras;
   final buscandoOnline;
 
@@ -41,14 +42,14 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
           SearchBar(controller: _busquedaController,
                     leading: Icon(Icons.search),
                     hintText: widget.buscandoEmisoras ? TextosApp.getTexto("pista_busqueda_emisoras") : TextosApp.getTexto("pista_busqueda_emisoras"),
-                    onChanged: (value) => widget.buscandoOnline ? setState(() => _filtroRadioBrowser = value) : buscar(value),
-                    onSubmitted: (value) => widget.buscandoOnline ? setState(() => _filtroRadioBrowser = value) : buscar(value),
+                    onChanged: (value) => widget.buscandoOnline ?? false ? setState(() => _filtroRadioBrowser = value) : buscar(value),
+                    onSubmitted: (value) => widget.buscandoOnline ?? false ? setState(() => _filtroRadioBrowser = value) : buscar(value),
                     autoFocus: true,
           ),
           SizedBox(height: 16,),
           // Lista de emisoras o listas
           Expanded(
-            child: widget.buscandoEmisoras ? widget.buscandoOnline ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : Text("busqueda_listas"), //TODO: Añadir funcionalidad
+            child: widget.buscandoEmisoras ? widget.buscandoOnline ?? false ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : Text("busqueda_listas"), //TODO: Añadir funcionalidad
           )
         ]
       )
@@ -86,7 +87,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
                 leading: SizedBox(
                   width: 40,
                   height: 40,
-                  child: emisora.imagen,
+                  child: emisora.imagen ?? Image.asset(IMAGEN_EMISORA_POR_DEFECTO),
                 ),
                 // Icono a la izquierda
                 title: Text(emisora.nombre),

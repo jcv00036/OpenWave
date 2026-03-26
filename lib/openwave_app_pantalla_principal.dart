@@ -4,6 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:openwave/Pantallas/Modales/pantalla_reproduccion.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_emisoras.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
+import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 import 'package:marquee/marquee.dart';
@@ -65,7 +66,7 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal>
                     child: Row(
                       children: [
                         Image(
-                          image: manager.emisoraSeleccionada.imagen!.image,
+                          image: manager.emisoraSeleccionada.imagen?.image ?? AssetImage(IMAGEN_EMISORA_POR_DEFECTO),
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
@@ -87,7 +88,6 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal>
                                   builder: (context, snapshot) {
                                     final metadata = snapshot.data;
                                     final title = metadata?.info?.title ?? '';
-                                    final urlTransmision = metadata?.info?.url ?? '';
                                     if (title != '') {
                                       return SizedBox(
                                         height:
@@ -150,7 +150,7 @@ class _OpenWavePantallaPrincipalState extends State<OpenWavePantallaPrincipal>
                             height: 30,
                             child: manager.cargando
                                 ? CircularProgressIndicator()
-                                : Icon(Icons.stop_outlined, size: 30),
+                                : Icon(Icons.stop, size: 30),
                           ),
                           onPressed: () => manager.pararReproduccion(),
                         ),

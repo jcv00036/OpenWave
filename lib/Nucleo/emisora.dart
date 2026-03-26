@@ -43,6 +43,8 @@ class Emisora{
 
   set nombre(String nombre)  => _nombre = nombre;
 
+  set id(String id) => _id = id;
+
   set url(String url) => _url = url;
 
   set imagen(Image imagen) => _imagen = imagen;

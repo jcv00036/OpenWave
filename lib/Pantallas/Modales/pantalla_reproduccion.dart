@@ -139,7 +139,7 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                           reproductor.pararReproduccion();
                           Navigator.pop(context);
                         },
-                        icon: const Icon(Icons.stop_outlined),
+                        icon: const Icon(Icons.stop),
                       ),
                       const SizedBox(width: 20),
                       IconButton(

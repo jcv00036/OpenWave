@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:openwave/Pantallas/Modales/agregar_emisora.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_busqueda.dart';
+import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +56,8 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                     child: Image(
                         width: 40,
                         height: 40,
-                        image: emisora.imagen!.image
+                        image: emisora.imagen != null ? emisora.imagen!.image : AssetImage(IMAGEN_EMISORA_POR_DEFECTO),
+                        fit: BoxFit.cover
                     ),
                   ),
                   // Icono a la izquierda

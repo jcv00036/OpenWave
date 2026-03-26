@@ -34,7 +34,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   late String nombre = widget._modoEditar ? widget._emisoraEditar!.nombre : "";
   late String url = widget._modoEditar ? widget._emisoraEditar!.url : "";
   late Image imagen = widget._modoEditar
-      ? widget._emisoraEditar!.imagen!
+      ? widget._emisoraEditar?.imagen ?? Image.asset(IMAGEN_EMISORA_POR_DEFECTO)
       : Image.asset(IMAGEN_EMISORA_POR_DEFECTO, width: 200, height: 200);
   late List<String> etiquetas = widget._modoEditar
       ? widget._emisoraEditar!.etiquetas

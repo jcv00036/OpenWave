@@ -54,10 +54,17 @@ class Reproductor extends ChangeNotifier{
 
     _cargando = true;
     notifyListeners();
-    await _reproductor.setAudioSources(
-      emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
-      initialIndex: indiceEmisora,
-    );
+    try{
+      await _reproductor.setAudioSources(
+        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
+        initialIndex: indiceEmisora,
+      );
+    }catch (e){
+      print("Error al reproducir emisora: $e");
+      pasarEmisora();
+      notifyListeners();
+      return;
+    }
 
     _cargando = false;
     _reproductor.play();
