@@ -44,9 +44,41 @@ class _MinireproductorState extends State<Minireproductor> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.reproductor.emisoraSeleccionada.nombre,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    SizedBox(
+                      height: 25,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final texto = widget.reproductor.emisoraSeleccionada.nombre;
+                          final style = Theme.of(context).textTheme.titleMedium;
+
+                          final textPainter = TextPainter(
+                            text: TextSpan(text: texto, style: style),
+                            maxLines: 1,
+                            textDirection: TextDirection.ltr,
+                          )..layout();
+
+                          if (textPainter.width < constraints.maxWidth) {
+                            return Text(
+                              texto,
+                              style: style,
+                            );
+                          }
+
+                          return Marquee(
+                            text: texto,
+                            style: style,
+                            scrollAxis: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            blankSpace: 50.0,
+                            velocity: 30.0,
+                            pauseAfterRound: const Duration(seconds: 2),
+                            accelerationDuration: const Duration(seconds: 1),
+                            accelerationCurve: Curves.linear,
+                            decelerationDuration: const Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
+                          );
+                        },
+                      ),
                     ),
                     StreamBuilder<IcyMetadata?>(
                       key: ValueKey(widget.reproductor.emisoraSeleccionada.id),
