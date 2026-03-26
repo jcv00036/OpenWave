@@ -73,7 +73,7 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
                     children: [
                       IconButton(
                           onPressed: () => botonEditarPulsado(emisora),
-                          icon: Icon(Icons.settings)),
+                          icon: Icon(Icons.edit)),
                       ElevatedButton(
                         onPressed: () =>
                             botonEmisoraPulsado(emisora, reproductor),

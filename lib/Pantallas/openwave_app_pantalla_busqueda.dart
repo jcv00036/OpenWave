@@ -103,7 +103,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
                   children: [
                     IconButton(
                         onPressed: () => widget.editarEmisora?.call(emisora),
-                        icon: Icon(Icons.settings)),
+                        icon: Icon(Icons.edit)),
                     ElevatedButton(
                       onPressed: ()
                       {

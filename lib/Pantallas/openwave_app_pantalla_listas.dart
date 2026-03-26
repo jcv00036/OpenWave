@@ -4,6 +4,7 @@ import 'package:openwave/Nucleo/gestor_listas.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
+import '../Reproduccion/reproductor.dart';
 import 'openwave_app_pantalla_busqueda.dart';
 
 class OpenwaveAppPantallaListas extends StatefulWidget {
@@ -34,17 +35,37 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
         shape: const CircleBorder(),
         child: Icon(CupertinoIcons.plus),
       ),
-      body: Consumer<GestorListas>(
-        builder: (context, manager, child) {
+      body: Consumer2<GestorListas, Reproductor>(
+        builder: (context, gestorListas, reproductor, child) {
           return ListView.builder(
-            itemCount: manager.listas.length,
+            itemCount: gestorListas.listas.length,
             itemBuilder: (context, index) {
-              final lista = manager.listas[index];
+              final lista = gestorListas.listas[index];
               return ListTile(
                 leading: Icon(Icons.list),
                 title: Text(lista.nombre),
                 subtitle: Text(lista.emisoras.isEmpty ? TextosApp.getTexto("lista_vacia") : "${lista.emisoras.length} ${TextosApp.getTexto("emisoras_nombre_plural")}"),
-
+                  trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () => botonEditarPulsado(lista),
+                            icon: Icon(Icons.edit)),
+                        ElevatedButton(
+                          onPressed: () =>
+                              lista.emisoras.isEmpty ? null : botonListaPulsado(lista),
+                          child:  SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: lista.emisoras.isEmpty ? const Icon(Icons.play_disabled) : reproductor.cargando && reproductor.emisoraSeleccionada == lista.emisoras.first && reproductor.emisorasEscuchando == lista.emisoras
+                                ? const CircularProgressIndicator()
+                                : reproductor.emisoraSeleccionada == lista.emisoras.first && reproductor.emisorasEscuchando == lista.emisoras
+                                ? const Icon(Icons.stop_rounded)
+                                : const Icon(Icons.play_arrow_rounded),
+                          ),
+                        ),
+                      ]
+                  ),
               );
             }
           );
@@ -58,5 +79,13 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
   }
 
   void botonBuscarPulsado(){
+  }
+
+  void botonEditarPulsado(lista){
+    // TODO: Implementar
+  }
+
+  void botonListaPulsado(lista){
+    // TODO: Implementar
   }
 }
