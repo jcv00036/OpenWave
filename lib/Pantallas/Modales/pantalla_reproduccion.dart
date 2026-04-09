@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
+import 'package:openwave/Pantallas/Widgets/openwave_app_corazon_favoritos.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
@@ -19,7 +20,14 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(TextosApp.getTexto("reproductor_titulo")), backgroundColor: Colors.transparent, scrolledUnderElevation: 0,),
+      appBar: AppBar(
+        title: Text(TextosApp.getTexto("reproductor_titulo")), 
+        backgroundColor: Colors.transparent, 
+        scrolledUnderElevation: 0,
+        actions: [
+          CorazonFavoritos(emisoraEditar: Provider.of<Reproductor>(context).emisoraSeleccionada)
+        ],
+      ),
       body: Consumer<Reproductor>(
         builder: (context, reproductor, child) {
       return Stack(
