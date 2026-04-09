@@ -147,6 +147,7 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
       // Muestra un snackbar con un mensaje de que la lista está vacía
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(TextosApp.getTexto("error_lista_vacia"))));
+      return;
     }
 
     // Si no, comenzamos la reproducción de la lista

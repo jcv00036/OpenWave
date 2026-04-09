@@ -106,11 +106,16 @@ class GestorListas extends ChangeNotifier {
         await _database!.insert("emisora_lista", {"id_emisora": emisora.id, "id_lista": lista.id});
       }
 
-      await _database!.update("lista", {"nombre": nombre}, where: "id = ?", whereArgs: [lista.id]);
+      if(!lista.permanente) {
+        await _database!.update("lista", {"nombre": nombre}, where: "id = ?",
+            whereArgs: [lista.id]);
+      }
 
       int indice = _listas.indexWhere((l) => l.id == lista.id);
       if (indice != -1) {
-        _listas[indice].nombre = nombre;
+        if(!lista.permanente) {
+          _listas[indice].nombre = nombre;
+        }
         _listas[indice].emisoras = List.from(emisoras);
       }
 
@@ -123,6 +128,7 @@ class GestorListas extends ChangeNotifier {
   }
 
   Future<bool> eliminarLista(ListaReproduccion lista) async {
+    if(lista.permanente) return false;
     try {
       await _database!.delete("emisora_lista", where: "id_lista = ?", whereArgs: [lista.id]);
       await _database!.delete("lista", where: "id = ?", whereArgs: [lista.id]);

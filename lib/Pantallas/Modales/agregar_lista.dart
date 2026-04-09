@@ -131,7 +131,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget._modoEditar)
+              if (widget._modoEditar && !widget._listaEditar!.permanente)
                 ElevatedButton(
                   style: ButtonStyle(
                     alignment: Alignment.center,
