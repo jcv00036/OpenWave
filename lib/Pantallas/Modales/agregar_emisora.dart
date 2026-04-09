@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_busqueda.dart';
+import 'package:provider/provider.dart';
 
 import '../../Nucleo/emisora.dart';
+import '../../Nucleo/gestor_listas.dart';
 import '../../constantes.dart';
 import '../../l10n/textos_app.dart';
 
@@ -115,7 +117,28 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_titulo)),
+      appBar: AppBar(
+          title: Text(_titulo),
+          actions: [
+            if(widget._modoEditar)  IconButton(
+                onPressed: () => setState(() {
+                  cambiarFavorita(context);
+                }),
+                icon: Consumer<GestorListas>(
+                    builder: (context, gestorListas, child) {
+                      return FutureBuilder(
+                          future: esFavorita(),
+                          builder: (context, snapshot) {
+                            return Icon(
+                              snapshot.hasData && snapshot.data!
+                                ? Icons.favorite
+                                : Icons.favorite_border);
+                          });
+                    }
+                )
+            ),
+          ],
+      ),
       floatingActionButton: widget._modoEditar ? null : FloatingActionButton(
         shape: const CircleBorder(),
         onPressed: () {
@@ -423,5 +446,43 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
       buffer = "";
       _etiquetasController.clear();
     });
+  }
+  
+  Future<void> cambiarFavorita(BuildContext context) async {
+    var gestorListas = Provider.of<GestorListas>(context, listen: false);
+    
+    // Editamos la emisora
+    var listaFavoritos = await gestorListas.listaFavoritos;
+    var favoritos = listaFavoritos.emisoras.toSet();
+    
+    bool agregando = false;
+    if(favoritos.contains(widget._emisoraEditar)){
+      favoritos.remove(widget._emisoraEditar);
+    }else{
+      favoritos.add(widget._emisoraEditar!);
+      agregando = true;
+    }
+
+    bool resultado = await gestorListas.editarLista(listaFavoritos, listaFavoritos.nombre, favoritos.toList());
+    if(resultado){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            agregando 
+              ? TextosApp.getTexto("favorito_agregado") 
+              : TextosApp.getTexto("favorito_no_agregado")
+          ),
+          duration: const Duration(seconds: 1),
+        )
+      );
+    }
+  }
+
+  Future<bool> esFavorita() async {
+    var gestorListas = Provider.of<GestorListas>(context, listen: false);
+
+    var listaFavoritos = await gestorListas.listaFavoritos;
+    var favoritos = listaFavoritos.emisoras.toSet();
+    return favoritos.contains(widget._emisoraEditar);
   }
 }

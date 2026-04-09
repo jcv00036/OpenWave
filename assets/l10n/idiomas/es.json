@@ -48,5 +48,7 @@
   "error_lista_editar" : "No se ha podido modificar la lista",
   "lista_eliminada" : "Se ha eliminado la lista",
   "error_lista_eliminar" : "No se ha podido eliminar la lista",
-  "error_reproduciendo" : "No se ha podido reproducir la emisora seleccionada"
+  "error_reproduciendo" : "No se ha podido reproducir la emisora seleccionada",
+  "favorito_agregado" : "Se ha añadido la emisora a favoritos",
+  "favorito_no_agregado" : "No se ha podido añadir la emisora a favoritos"
 }
