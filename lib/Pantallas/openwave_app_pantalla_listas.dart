@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../Nucleo/gestor_emisoras.dart';
 import '../Reproduccion/reproductor.dart';
+import 'Modales/lista_reproduccion.dart';
 import 'openwave_app_pantalla_busqueda.dart';
 import 'package:openwave/Pantallas/Modales/agregar_lista.dart';
 
@@ -69,6 +70,7 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
                         ),
                       ]
                   ),
+                onTap: () => listaPulsada(lista),
               );
             }
           );
@@ -146,5 +148,21 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(TextosApp.getTexto("error_lista_vacia"))));
     }
+
+    // Si no, comenzamos la reproducción de la lista
+    final reproductor = Provider.of<Reproductor>(context, listen: false);
+    reproductor.reproducirEmisora(lista.emisoras.first, lista.emisoras);
+  }
+
+  void listaPulsada(ListaReproduccion lista){
+    // Nos movemos a la pantalla de la lista
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PantallaListaReproduccion(lista: lista, reproducirLista: botonListaPulsado);
+        },
+      ),
+    );
   }
 }
