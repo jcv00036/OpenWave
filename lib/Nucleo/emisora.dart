@@ -13,7 +13,13 @@ class Emisora{
   Emisora(this._id, this._nombre, this._url, this._metadatos, this._etiquetas);
 
   factory Emisora.fromJson(Map<String, dynamic> json){
-    var instancia = Emisora("0", json["name"].toString(), json["url"].toString(), [], json["tags"].toString().split(","));
+    var etiquetas = json["tags"];
+    if (etiquetas == null || etiquetas == "") {
+      etiquetas = [];
+    }else{
+      etiquetas = etiquetas.toString().split(",");
+    }
+    var instancia = Emisora("0", json["name"].toString(), json["url"].toString(), [], etiquetas);
     var uriImagen = Uri.parse(json["favicon"].toString());
     if (!uriImagen.hasEmptyPath) {
       // Primero compruebo si la imagen es de un formato soportado por Image

@@ -50,5 +50,7 @@
   "error_lista_eliminar" : "No se ha podido eliminar la lista",
   "error_reproduciendo" : "No se ha podido reproducir la emisora seleccionada",
   "favorito_agregado" : "Se ha añadido la emisora a favoritos",
-  "favorito_no_agregado" : "No se ha podido añadir la emisora a favoritos"
+  "favorito_no_agregado" : "No se ha podido añadir la emisora a favoritos",
+  "error_conexion_api_busqueda" : "No se ha podido conectar con la API de búsqueda",
+  "no_hay_emisoras" : "No hay emisoras, pruebe a agregar una pulsando en el botón de agregar (+)."
 }

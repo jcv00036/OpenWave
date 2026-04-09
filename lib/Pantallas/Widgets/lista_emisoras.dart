@@ -4,6 +4,7 @@ import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:provider/provider.dart';
 
 import '../../Nucleo/gestor_emisoras.dart';
+import '../../Nucleo/gestor_listas.dart';
 import '../../constantes.dart';
 import '../../l10n/textos_app.dart';
 import '../Modales/agregar_emisora.dart';
@@ -115,6 +116,8 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
             emisora: emisora,
             eliminarEmisora: (emisora) async {
               if (await manager.eliminarEmisora(emisora)) {
+                var gestorListas = Provider.of<GestorListas>(context, listen: false);
+                gestorListas.recargarListas();
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                         content: Text("${TextosApp.getTexto("emisora_eliminada"

@@ -163,6 +163,10 @@ class GestorEmisoras extends ChangeNotifier{
   Future<bool> eliminarEmisora(Emisora emisora) async {
     try{
       await _database.delete("emisora", where: "id = ?", whereArgs: [emisora.id]);
+
+      // Borra también todas las apariciones que tenga en una lista de reproduccion
+      await _database.delete("emisora_lista", where: "id_emisora = ?", whereArgs: [emisora.id]);
+
       _emisoras.remove(emisora);
       notifyListeners();
       return true;
