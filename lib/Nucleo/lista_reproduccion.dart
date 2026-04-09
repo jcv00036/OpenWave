@@ -22,7 +22,7 @@ class ListaReproduccion {
 
   bool get permanente => _permanente;
 
-  String get id => id;
+  String get id => _id;
 
   bool agregarEmisora(Emisora emisora) {
     _emisoras?.add(emisora);

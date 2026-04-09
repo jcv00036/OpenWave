@@ -1,22 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:openwave/Nucleo/gestor_emisoras.dart';
 import 'package:openwave/Nucleo/lista_reproduccion.dart';
+import 'package:openwave/constantes.dart';
 
+import '../../Nucleo/emisora.dart';
 import '../../l10n/textos_app.dart';
 
 class PantallaAgregarLista extends StatefulWidget {
   PantallaAgregarLista({
     super.key,
     required this.agregarLista,
-    emisora,
+    lista,
     this.eliminarLista,
-  }) : _listaEditar = emisora,
-        _modoEditar = emisora != null;
+    this.editarLista,
+    required this.managerEmisoras
+  }) : _listaEditar = lista,
+        _modoEditar = lista != null;
 
-  final Function(String) agregarLista;
+  final Function(String, List<Emisora>) agregarLista;
+  final Function(String, List<Emisora>)? editarLista;
   final Function(ListaReproduccion)? eliminarLista;
   final ListaReproduccion? _listaEditar;
-  late final _modoEditar;
+  final _modoEditar;
+
+  GestorEmisoras managerEmisoras;
 
   @override
   State<PantallaAgregarLista> createState() => _PantallaAgregarListaState();
@@ -24,6 +32,7 @@ class PantallaAgregarLista extends StatefulWidget {
 
 class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
   late String nombre = widget._modoEditar ? widget._listaEditar!.nombre : "";
+  late List<Emisora> emisoras_agregar = widget._listaEditar != null ? widget._listaEditar!.emisoras : [];
 
   late final TextEditingController _nombreController = TextEditingController(
     text: nombre,
@@ -54,13 +63,14 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                 textAlign: TextAlign.center,
               ),
               TextField(
+                enabled: !widget._modoEditar,
                 decoration: InputDecoration(
                   labelText: TextosApp.getTexto("nombre_lista"),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   filled: true,
-                  prefixIcon: Icon(Icons.radio),
+                  prefixIcon: Icon(Icons.list),
                 ),
                 controller: _nombreController,
                 onChanged: (nombre_nuevo) {
@@ -69,6 +79,49 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                   });
                 },
               ),
+              SizedBox(height: 16),
+              Text(
+                TextosApp.getTexto("emisoras_agregar"),
+                textAlign: TextAlign.center,
+              ),
+              // Cajón en el que pondré la lista de emisoras que se pueden añadir a la lista
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.managerEmisoras.emisoras.length,
+                  itemBuilder: (context, index) {
+                    final emisora = widget.managerEmisoras.emisoras[index];
+                    return ListTile(
+                      leading: Image(
+                          width: 40,
+                          height: 40,
+                          image: emisora.imagen != null ? emisora.imagen!.image : AssetImage(IMAGEN_EMISORA_POR_DEFECTO),
+                          fit: BoxFit.cover
+                      ),
+                      title: Text(emisora.nombre),
+                      trailing: Checkbox(
+                          value: emisoras_agregar.contains(emisora),
+                          onChanged: (value) {
+                           if (value == true) {
+                             setState(() {
+                               emisoras_agregar.add(emisora);
+                             });
+                           } else {
+                             setState(() {
+                               emisoras_agregar.remove(emisora);
+                             });
+                           }
+                          }
+                      ),
+                    );
+                  }
+                )
+              )
             ],
           ),
         ),
@@ -137,7 +190,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                   ),
                 ),
                 onPressed: () {
-                  if (nombre == "") {   // TODO: poner los campos obligatorios
+                  if (nombre == "") {
                     // Mostrar un mensaje de error
                     showDialog(
                       context: context,
@@ -153,7 +206,11 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                       ),
                     );
                   } else {
-                    widget.agregarLista(nombre);
+                    if (widget._modoEditar) {
+                      widget.editarLista!(nombre, emisoras_agregar);
+                    } else {
+                      widget.agregarLista(nombre, emisoras_agregar);
+                    }
                     Navigator.pop(context);
                   }
                 },

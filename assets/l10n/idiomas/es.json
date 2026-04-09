@@ -41,5 +41,11 @@
   "eliminar_lista" : "Borrar lista",
   "nombre_lista" : "Nombre de la lista",
   "eliminar_lista_pregunta" : "¿Está seguro de que desea eliminar esta lista?",
-  "lista_agregada" : "Se ha añadido la lista"
+  "lista_agregada" : "Se ha añadido la lista",
+  "error_lista_agregar" : "No se ha podido añadir la lista",
+  "emisoras_agregar" : "Emisoras de la lista",
+  "lista_editada" : "Se ha modificado la lista",
+  "error_lista_editar" : "No se ha podido modificar la lista",
+  "lista_eliminada" : "Se ha eliminado la lista",
+  "error_lista_eliminar" : "No se ha podido eliminar la lista"
 }

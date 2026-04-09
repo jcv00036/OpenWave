@@ -5,6 +5,7 @@ import 'package:openwave/Nucleo/lista_reproduccion.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
+import '../Nucleo/gestor_emisoras.dart';
 import '../Reproduccion/reproductor.dart';
 import 'openwave_app_pantalla_busqueda.dart';
 import 'package:openwave/Pantallas/Modales/agregar_lista.dart';
@@ -44,16 +45,16 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
             itemBuilder: (context, index) {
               final lista = gestorListas.listas[index];
               return ListTile(
-                leading: Icon(Icons.list),
+                leading: Icon(lista.nombre == TextosApp.getTexto("lista_favoritos") ? Icons.favorite : Icons.list),
                 title: Text(lista.nombre),
                 subtitle: Text(lista.emisoras.isEmpty ? TextosApp.getTexto("lista_vacia") : "${lista.emisoras.length} ${TextosApp.getTexto("emisoras_nombre_plural")}"),
                   trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (!lista.permanente)  IconButton(
-                                                    onPressed: () => botonEditarPulsado(lista),
-                                                    icon: Icon(Icons.edit)
-                                                ),
+                        IconButton(
+                            onPressed: () => botonEditarPulsado(lista),
+                            icon: Icon(Icons.edit)
+                        ),
                         ElevatedButton(
                           onPressed: () => botonListaPulsado(lista),
                           child:  SizedBox(
@@ -78,21 +79,65 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
 
   void botonAgregarPulsado(){
     final manager = Provider.of<GestorListas>(context, listen: false);
+    final managerEmisoras = Provider.of<GestorEmisoras>(context, listen: false);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) {
-          return PantallaAgregarLista(agregarLista: (nombre) => {});
+          return PantallaAgregarLista(agregarLista: (nombre, emisoras) async {
+            bool resultado = await manager.agregarLista(nombre, emisoras);
+            if(resultado){
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("${TextosApp.getTexto(
+                      "lista_agregada")} $nombre")));
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(TextosApp.getTexto("error_lista_agregar"))));
+            }
+          },
+          managerEmisoras: managerEmisoras,
+          );
         },
       ),
     );
   }
 
-  void botonBuscarPulsado(){
-  }
-
   void botonEditarPulsado(lista){
-    // TODO: Implementar
+    final manager = Provider.of<GestorListas>(context, listen: false);
+    final managerEmisoras = Provider.of<GestorEmisoras>(context, listen: false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PantallaAgregarLista(
+              agregarLista: (nombre, emisoras) {},
+              managerEmisoras: managerEmisoras,
+              lista: lista,
+              editarLista: (nombre, emisoras) async {
+                bool resultado = await manager.editarLista(lista, nombre, emisoras);
+                if(resultado){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("${TextosApp.getTexto(
+                          "lista_editada")} $nombre")));
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(TextosApp.getTexto("error_lista_editar"))));
+                }
+              },
+              eliminarLista: (lista) async {
+                bool resultado = await manager.eliminarLista(lista);
+                if(resultado){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("${TextosApp.getTexto(
+                          "lista_eliminada")} ${lista.nombre}")));
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(TextosApp.getTexto("error_lista_eliminar"))));
+                }
+              }
+          );
+        })
+    );
   }
 
   void botonListaPulsado(ListaReproduccion lista){
