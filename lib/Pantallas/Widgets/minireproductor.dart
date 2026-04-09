@@ -29,7 +29,7 @@ class _MinireproductorState extends State<Minireproductor> {
           Theme.of(context).colorScheme.surfaceContainer,
       child: InkWell(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 8, top: 8),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Image(

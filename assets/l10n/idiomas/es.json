@@ -34,5 +34,12 @@
   "imagen_muy_grande" : "La imagen escogida es demasiado grande",
   "lista_favoritos" : "Emisoras favoritas",
   "lista_vacia" : "Lista vacía",
-  "emisoras_nombre_plural" : "emisoras"
+  "emisoras_nombre_plural" : "emisoras",
+  "error_lista_vacia" : "La lista está vacía",
+  "agregar_lista" : "Agregar lista",
+  "editar_lista" : "Editar lista",
+  "eliminar_lista" : "Borrar lista",
+  "nombre_lista" : "Nombre de la lista",
+  "eliminar_lista_pregunta" : "¿Está seguro de que desea eliminar esta lista?",
+  "lista_agregada" : "Se ha añadido la lista"
 }

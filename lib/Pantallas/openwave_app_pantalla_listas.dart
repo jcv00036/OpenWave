@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/gestor_listas.dart';
+import 'package:openwave/Nucleo/lista_reproduccion.dart';
 import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
 import '../Reproduccion/reproductor.dart';
 import 'openwave_app_pantalla_busqueda.dart';
+import 'package:openwave/Pantallas/Modales/agregar_lista.dart';
 
 class OpenwaveAppPantallaListas extends StatefulWidget {
   const OpenwaveAppPantallaListas({super.key});
@@ -48,12 +50,12 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
                   trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                            onPressed: () => botonEditarPulsado(lista),
-                            icon: Icon(Icons.edit)),
+                        if (!lista.permanente)  IconButton(
+                                                    onPressed: () => botonEditarPulsado(lista),
+                                                    icon: Icon(Icons.edit)
+                                                ),
                         ElevatedButton(
-                          onPressed: () =>
-                              lista.emisoras.isEmpty ? null : botonListaPulsado(lista),
+                          onPressed: () => botonListaPulsado(lista),
                           child:  SizedBox(
                             width: 24,
                             height: 24,
@@ -75,7 +77,15 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
   }
 
   void botonAgregarPulsado(){
-    // TODO: Implementar
+    final manager = Provider.of<GestorListas>(context, listen: false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PantallaAgregarLista(agregarLista: (nombre) => {});
+        },
+      ),
+    );
   }
 
   void botonBuscarPulsado(){
@@ -85,7 +95,11 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
     // TODO: Implementar
   }
 
-  void botonListaPulsado(lista){
-    // TODO: Implementar
+  void botonListaPulsado(ListaReproduccion lista){
+    if(lista.emisoras.isEmpty){
+      // Muestra un snackbar con un mensaje de que la lista está vacía
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(TextosApp.getTexto("error_lista_vacia"))));
+    }
   }
 }

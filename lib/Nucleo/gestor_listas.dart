@@ -64,5 +64,69 @@ class GestorListas extends ChangeNotifier{
       _listas.add(ListaReproduccion(id, nombre, listaEmisorasLista, permanente));
     });
   }
-    
+
+  Future<bool> agregarLista(String nombre, List<Emisora> emisoras) async {
+    try{
+      // Añado la lista a la base de datos
+      int id = await _database.insert("lista", {"nombre": nombre, "permanente": 0});
+
+      // Añado todas las emisora_lista a la base de datos
+      emisoras.map((emisora) async => {
+        await _database.insert("emisora_lista", {"id_emisora": emisora.id, "id_lista": id})
+      });
+
+      // Creo la lista de reproduccion
+      _listas.add(ListaReproduccion(id.toString(), nombre, emisoras, false));
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      print("Error al agregar lista: $e");
+      return false;
+    }
+  }
+  
+  Future<bool> editarLista(ListaReproduccion lista, String nombre, List<Emisora> emisoras) async {
+    try{
+      // Borro todos los emisora_lista relacionados con esta lista y vuelvo a introducirlas con las nuevas emisoras
+      await _database.delete("emisora_lista", where: "id_lista = ?", whereArgs: [lista.id]);
+      emisoras.map((emisora) async => {
+        await _database.insert("emisora_lista", {"id_emisora": emisora.id, "id_lista": lista.id})
+      });
+      
+      // Edito la lista en la base de datos
+      await _database.update("lista", {"nombre": nombre}, where: "id = ?", whereArgs: [lista.id]);
+      
+      // Actualizo la instancia de la lista
+      int indice = _listas.indexOf(lista);
+      _listas[indice].nombre = nombre;
+      _listas[indice].emisoras = emisoras;
+      
+      notifyListeners();
+      return true;
+    }catch(e){
+      print("Error al editar lista: $e");
+      return false;
+    }
+  }
+  
+  Future<bool> eliminarLista(ListaReproduccion lista) async {
+    try{
+      // Borro todos los emisora_lista relacionados con esta lista
+      await _database.delete("emisora_lista", where: "id_lista = ?", whereArgs: [lista.id]);
+
+      // Elimino la lista en la base de datos
+      await _database.delete("lista", where: "id = ?", whereArgs: [lista.id]);
+
+      // Saco la instancia de la lista
+      int indice = _listas.indexOf(lista);
+      _listas.removeAt(indice);
+
+      notifyListeners();
+      return true;
+    }catch(e){
+      print("Error al eliminar lista: $e");
+      return false;
+    }
+  }
 }
