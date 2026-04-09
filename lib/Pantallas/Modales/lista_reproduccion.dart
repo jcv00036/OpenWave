@@ -48,10 +48,16 @@ class _PantallaListaReproduccionState extends State<PantallaListaReproduccion> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(child: ListaEmisoras(emisoras: widget.lista.emisoras)),
-        ],
+      body: Consumer<GestorListas>(
+        builder: (context, manager, child) {
+          var index = manager.listas.indexWhere((element) => element.id == widget.lista.id);
+          var lista = manager.listas[index];
+          return Column(
+            children: [
+              Expanded(child: ListaEmisoras(emisoras: lista.emisoras)),
+            ],
+          );
+        }
       ),
       bottomNavigationBar: Consumer<Reproductor>(
         builder: (context, manager, child) {
