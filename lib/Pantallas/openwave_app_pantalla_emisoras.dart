@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:openwave/Pantallas/Modales/agregar_emisora.dart';
+import 'package:openwave/Pantallas/Widgets/lista_emisoras.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_busqueda.dart';
 import 'package:openwave/constantes.dart';
 import 'package:openwave/l10n/textos_app.dart';
@@ -43,68 +44,7 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       body: SafeArea(
         child: Consumer2<GestorEmisoras, Reproductor>(
           builder: (context, manager, reproductor, child) {
-            return ListView.builder(
-              // Obtenemos la cantidad de emisoras
-              padding: EdgeInsets.only(bottom: 56),
-              itemCount: manager.emisoras.length,
-              itemBuilder: (context, index) {
-                final emisora = manager.emisoras[index];
-                return ListTile(
-                  leading: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Image(
-                        width: 40,
-                        height: 40,
-                        image: emisora.imagen != null ? emisora.imagen!.image : AssetImage(IMAGEN_EMISORA_POR_DEFECTO),
-                        fit: BoxFit.cover
-                    ),
-                  ),
-                  // Icono a la izquierda
-                  title: Text(emisora.nombre),
-                  // Nombre de la emisora
-                  subtitle: Text(emisora.etiquetas.isEmpty
-                                 ? emisora.url
-                                 : emisora.etiquetas.join(", "), overflow: TextOverflow.ellipsis,),
-                  // URL
-                  onLongPress: () => botonEditarPulsado(emisora), 
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          onPressed: () => botonEditarPulsado(emisora),
-                          icon: Icon(Icons.edit)),
-                      ElevatedButton(
-                        onPressed: () =>
-                            botonEmisoraPulsado(emisora, reproductor),
-                        child:  SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: reproductor.cargando && reproductor.emisoraSeleccionada == emisora
-                                  ? const CircularProgressIndicator()
-                                  : reproductor.emisoraSeleccionada == emisora
-                                    ? const Icon(Icons.stop_rounded)
-                                    : const Icon(Icons.play_arrow_rounded),
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Botón de reproducción a la derecha
-                  onTap: () {
-                    print("Reproduciendo: ${emisora.nombre}");
-                    setState(() {
-                      if (reproductor.emisoraSeleccionada == emisora) {
-                        reproductor.emisoraSeleccionada = Emisora("0", "", "", [], []);
-                        reproductor.pararReproduccion();
-                      } else {
-                        reproductor.emisoraSeleccionada = emisora;
-                        reproductor.reproducirEmisora(emisora, Provider.of<GestorEmisoras>(context, listen: false).emisoras);
-                      }
-                    });
-                  },
-                );
-              },
-            );
+            return ListaEmisoras(emisoras: manager.emisoras);
           },
         ),
       ),
