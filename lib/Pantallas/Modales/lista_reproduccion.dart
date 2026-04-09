@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/lista_reproduccion.dart';
 import 'package:openwave/Pantallas/Widgets/lista_emisoras.dart';
+import 'package:openwave/l10n/textos_app.dart';
 import 'package:provider/provider.dart';
 
 import '../../Reproduccion/reproductor.dart';
@@ -28,7 +29,7 @@ class _PantallaListaReproduccionState extends State<PantallaListaReproduccion> {
               icon: const Icon(Icons.search)
           ),
           IconButton.filled(
-            onPressed: () => widget.reproducirLista,
+            onPressed: () => widget.reproducirLista(widget.lista),
             icon: const Icon(Icons.play_arrow),
             color: Theme.of(context).colorScheme.inversePrimary,
           )
@@ -44,7 +45,15 @@ class _PantallaListaReproduccionState extends State<PantallaListaReproduccion> {
       bottomNavigationBar:  Consumer<Reproductor>(
                               builder: (context, manager, child) {
                                 if (manager.parado) {
-                                  return const SizedBox.shrink();
+                                  return SafeArea(
+                                      maintainBottomViewPadding: true,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const SizedBox.shrink(),
+                                        ],
+                                      )
+                                  );
                                 }
                                 return SafeArea(
                                     maintainBottomViewPadding: true,

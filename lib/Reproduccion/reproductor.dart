@@ -42,11 +42,11 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
   }
 
-  void reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
+  Future<bool> reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
 
     var indiceEmisora = emisoras.indexOf(emisora);
     if (indiceEmisora == -1) {
-      return;
+      return false;
     }
 
     _emisoraSeleccionada = emisora;
@@ -63,12 +63,13 @@ class Reproductor extends ChangeNotifier{
       print("Error al reproducir emisora: $e");
       pararReproduccion();
       notifyListeners();
-      return;
+      return false;
     }
 
     _cargando = false;
     _reproductor.play();
     notifyListeners();
+    return true;
   }
 
   void pararReproduccion() {

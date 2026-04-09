@@ -57,7 +57,7 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
                             icon: Icon(Icons.edit)
                         ),
                         ElevatedButton(
-                          onPressed: () => botonListaPulsado(lista),
+                          onPressed: () => botonListaPulsado(lista, context),
                           child:  SizedBox(
                             width: 24,
                             height: 24,
@@ -142,7 +142,7 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
     );
   }
 
-  void botonListaPulsado(ListaReproduccion lista){
+  Future<void> botonListaPulsado(ListaReproduccion lista, BuildContext context) async {
     if(lista.emisoras.isEmpty){
       // Muestra un snackbar con un mensaje de que la lista está vacía
       ScaffoldMessenger.of(context).showSnackBar(
@@ -151,7 +151,12 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
 
     // Si no, comenzamos la reproducción de la lista
     final reproductor = Provider.of<Reproductor>(context, listen: false);
-    reproductor.reproducirEmisora(lista.emisoras.first, lista.emisoras);
+    bool resultado = await reproductor.reproducirEmisora(lista.emisoras.first, lista.emisoras);
+    if(!resultado){
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(TextosApp.getTexto("error_reproduciendo")))
+      );
+    }
   }
 
   void listaPulsada(ListaReproduccion lista){
@@ -160,7 +165,7 @@ class _OpenwaveAppPantallaListasState extends State<OpenwaveAppPantallaListas> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return PantallaListaReproduccion(lista: lista, reproducirLista: botonListaPulsado);
+          return PantallaListaReproduccion(lista: lista, reproducirLista: (lista) => botonListaPulsado(lista, context));
         },
       ),
     );

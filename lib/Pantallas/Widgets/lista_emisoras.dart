@@ -62,7 +62,7 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
                       reproductor.pararReproduccion();
                     } else {
                       reproductor.emisoraSeleccionada = emisora;
-                      reproductor.reproducirEmisora(emisora, widget.emisoras);
+                      reproducirEmisora(emisora, context);
                     }
                   });
                 },
@@ -87,7 +87,7 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
                 reproductor.pararReproduccion();
               } else {
                 reproductor.emisoraSeleccionada = emisora;
-                reproductor.reproducirEmisora(emisora, widget.emisoras);
+                reproducirEmisora(emisora, context);
               }
             });
           },
@@ -125,5 +125,15 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
         },
       ),
     );
+  }
+
+  Future<void> reproducirEmisora(Emisora emisora, BuildContext context) async {
+    final reproductor = Provider.of<Reproductor>(context, listen: false);
+    bool resultado = await reproductor.reproducirEmisora(emisora, widget.emisoras);
+    if(!resultado){
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(TextosApp.getTexto("error_reproduciendo")))
+      );
+    }
   }
 }
