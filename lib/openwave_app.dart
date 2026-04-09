@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/gestor_emisoras.dart';
+import 'package:openwave/Nucleo/gestor_listas.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/openwave_app_pantalla_principal.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class OpenWaveApp extends StatelessWidget {
           child: MultiProvider(
               providers: [
                 ChangeNotifierProvider(create: (context) => GestorEmisoras()),
+                ChangeNotifierProvider(create: (context) => GestorListas(Provider.of<GestorEmisoras>(context, listen: false))),
                 ChangeNotifierProvider(create: (context) => Reproductor()),
               ],
               child:MaterialApp(

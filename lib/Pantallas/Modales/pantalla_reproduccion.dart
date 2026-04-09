@@ -26,9 +26,9 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
         children: [
           GestureDetector(
             onTap: () {
-              if (_sheetController.isAttached && _sheetController.size > 0.25) {
+              if (_sheetController.isAttached && _sheetController.size > 0.12) {
                 _sheetController.animateTo(
-                  0.25,
+                  0.12,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOut,
                 );
@@ -65,15 +65,45 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
 
                   const SizedBox(height: 40),
 
-                  // NOMBRE DE LA EMISORA
+                  // NOMBRE DE LA EMISORA (Marquee)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      reproductor.cargando
-                          ? TextosApp.getTexto("reproductor_titulo_cargando")
-                          : reproductor.emisoraSeleccionada.nombre,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
+                    child: SizedBox(
+                      height: 45,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final String texto = reproductor.cargando
+                              ? TextosApp.getTexto("reproductor_titulo_cargando")
+                              : reproductor.emisoraSeleccionada.nombre;
+                          final style = Theme.of(context).textTheme.headlineMedium;
+
+                          final textPainter = TextPainter(
+                            text: TextSpan(text: texto, style: style),
+                            maxLines: 1,
+                            textDirection: TextDirection.ltr,
+                          )..layout();
+
+                          if (textPainter.width < constraints.maxWidth) {
+                            return Center(
+                              child: Text(texto, style: style, textAlign: TextAlign.center),
+                            );
+                          }
+
+                          return Marquee(
+                            text: texto,
+                            style: style,
+                            scrollAxis: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            blankSpace: 50.0,
+                            velocity: 30.0,
+                            pauseAfterRound: const Duration(seconds: 2),
+                            accelerationDuration: const Duration(seconds: 1),
+                            accelerationCurve: Curves.linear,
+                            decelerationDuration: const Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
+                          );
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -139,7 +169,7 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                           reproductor.pararReproduccion();
                           Navigator.pop(context);
                         },
-                        icon: const Icon(Icons.stop_outlined),
+                        icon: const Icon(Icons.stop),
                       ),
                       const SizedBox(width: 20),
                       IconButton(
@@ -175,15 +205,15 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
           ),
           DraggableScrollableSheet(
               controller: _sheetController,
-              initialChildSize: 0.25,
-              minChildSize: 0.25,
+              initialChildSize: 0.12,
+              minChildSize: 0.12,
               maxChildSize: 0.85,
               snap: true,
-              snapSizes: const [0.25, 0.85],
+              snapSizes: const [0.12, 0.85],
               builder: (context, scrollController) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
                     boxShadow: [
                       BoxShadow(
@@ -242,7 +272,17 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                                     emisora.nombre,
                                     style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  onTap: () => reproductor.reproducirEmisora(emisora, reproductor.emisorasEscuchando),
+                                  onTap: () {
+                                    reproductor.reproducirEmisora(emisora, reproductor.emisorasEscuchando);
+                                    if (_sheetController.size > 0.25){
+                                      // Cierro el cajón
+                                      _sheetController.animateTo(
+                                        0.25,
+                                        duration: const Duration(milliseconds: 300),
+                                        curve: Curves.easeOut,
+                                      );
+                                    }
+                                  },
                                 ),
                               );
                             },

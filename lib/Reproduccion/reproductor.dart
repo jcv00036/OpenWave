@@ -42,11 +42,11 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
   }
 
-  void reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
+  Future<bool> reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
 
     var indiceEmisora = emisoras.indexOf(emisora);
     if (indiceEmisora == -1) {
-      return;
+      return false;
     }
 
     _emisoraSeleccionada = emisora;
@@ -54,14 +54,22 @@ class Reproductor extends ChangeNotifier{
 
     _cargando = true;
     notifyListeners();
-    await _reproductor.setAudioSources(
-      emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
-      initialIndex: indiceEmisora,
-    );
+    try{
+      await _reproductor.setAudioSources(
+        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
+        initialIndex: indiceEmisora,
+      );
+    }on PlayerException catch (e){
+      print("Error al reproducir emisora: $e");
+      pararReproduccion();
+      notifyListeners();
+      return false;
+    }
 
     _cargando = false;
     _reproductor.play();
     notifyListeners();
+    return true;
   }
 
   void pararReproduccion() {

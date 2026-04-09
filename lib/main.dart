@@ -10,7 +10,7 @@ import 'package:system_theme/system_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await TextosApp.cargarTextos("es");
+  await TextosApp.cargarTextos(Platform.localeName.split('_').first);
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     // Inicializa la factoría para escritorio
     sqfliteFfiInit();

@@ -17,7 +17,13 @@ class TextosApp{
   static get instancia => _instancia;
 
   static Future<void> cargarTextos(String idioma) async {
-    var jsonDecodificado = jsonDecode(await rootBundle.loadString("$_origenTextos/$idioma.json"));
+    var jsonDecodificado;
+    try{
+      jsonDecodificado = jsonDecode(await rootBundle.loadString("$_origenTextos/$idioma.json"));
+    }catch (e){
+      print("Error al cargar los textos: $e. Cargando textos en español");
+      jsonDecodificado = jsonDecode(await rootBundle.loadString("$_origenTextos/es.json"));
+    }
     _textos = Map<String,String>.from(jsonDecodificado);
   }
 

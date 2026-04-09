@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/base_datos.dart';
 import 'package:openwave/Nucleo/emisora.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:image/image.dart' as img;
 
 class GestorEmisoras extends ChangeNotifier{
 
@@ -70,6 +72,55 @@ class GestorEmisoras extends ChangeNotifier{
       notifyListeners();
       return true;
     } catch (e) {
+      print("Error al agregar emisora: $e");
+      return false;
+    }
+  }
+
+  Future<bool> agregarEmisoraCopia(Emisora emisora) async {
+    try {
+      Uint8List? imagenBytes;
+
+      // Si tiene una imagen, la convierto a jpg comprimido 512x512 como el resto de las emisoras
+      if (emisora.imagen != null) {
+        final Completer<ui.Image> completer = Completer<ui.Image>();
+        final ImageStream stream = emisora.imagen!.image.resolve(const ImageConfiguration());
+        late ImageStreamListener listener;
+
+        listener = ImageStreamListener((ImageInfo info, bool _) {
+          completer.complete(info.image);
+          stream.removeListener(listener);
+        });
+        stream.addListener(listener);
+
+        final ui.Image uiImage = await completer.future;
+        final ByteData? byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
+
+        final imagen = img.decodeImage(byteData!.buffer.asUint8List());
+        if (imagen == null) return false;
+
+        // Redimensiono la imagen a 512x512 o max(img.width, img.height)^2
+        final int dimMax = max(imagen.width, imagen.height);
+        final int ancho = dimMax > 512 ? 512 : dimMax;
+        final int alto = dimMax > 512 ? 512 : dimMax;
+
+        final img.Image imagenRedimensionada = img.copyResize(imagen, width: ancho, height: alto);
+
+        imagenBytes = img.encodeJpg(imagenRedimensionada, quality: 80);
+
+        emisora.imagen = Image.memory(imagenBytes);
+      }
+
+      // Añado la emisora a la base de datos
+      int id = await _database.insert("emisora", {"nombre": emisora.nombre, "url": emisora.url, "imagen": imagenBytes, "etiquetas": emisora.etiquetas.join(",")});
+
+      // Añade la emisora a la lista de emisoras
+      emisora.id = id.toString();
+      _emisoras.add(emisora);
+
+      notifyListeners();
+      return true;
+    }catch (e) {
       print("Error al agregar emisora: $e");
       return false;
     }
