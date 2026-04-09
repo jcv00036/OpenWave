@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/emisora.dart';
+import 'package:openwave/Nucleo/gestor_listas.dart';
+import 'package:openwave/Nucleo/lista_reproduccion.dart';
+import 'package:openwave/Pantallas/Widgets/lista_emisoras.dart';
+import 'package:openwave/Pantallas/Widgets/lista_listas.dart';
 import 'package:openwave/RadioBrowser/lista_emisoras_radiobrowser.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/l10n/textos_app.dart';
@@ -9,10 +13,11 @@ import '../Nucleo/gestor_emisoras.dart';
 import '../constantes.dart';
 
 class OpenwaveAppPantallaBusqueda extends StatefulWidget {
-  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline = false, this.agregarEmisora, this.agregarEmisoraCopia, this.listaEmisorasBuscar});
+  const OpenwaveAppPantallaBusqueda({super.key, required this.buscandoEmisoras, this.editarEmisora, this.buscandoOnline = false, this.agregarEmisora, this.agregarEmisoraCopia, this.listaEmisorasBuscar, this.listaListasBuscar});
   final buscandoEmisoras;
   final buscandoOnline;
   final List<Emisora>? listaEmisorasBuscar;
+  final List<ListaReproduccion>? listaListasBuscar;
 
   final Function(Emisora)? editarEmisora;
   final Function(String, String, String, List<String>)? agregarEmisora;
@@ -26,6 +31,8 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
 
   final TextEditingController _busquedaController = TextEditingController();
   List<Emisora> _emisoras_visibles = <Emisora>[];
+  List<ListaReproduccion> _listas_visibles = <ListaReproduccion>[];
+
   bool _promptVacio = true;
 
   String? _filtroRadioBrowser;
@@ -50,7 +57,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
           SizedBox(height: 16,),
           // Lista de emisoras o listas
           Expanded(
-            child: widget.buscandoEmisoras ? widget.buscandoOnline ?? false ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : Text(TextosApp.getTexto("busqueda_listas")), //TODO: Añadir funcionalidad
+            child: widget.buscandoEmisoras ? widget.buscandoOnline ?? false ? listaEmisorasEncontradasOnline() : listaEmisorasFiltrada() : listaListasFiltrada(),
           )
         ]
       )
@@ -69,7 +76,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
       if (widget.buscandoEmisoras) {
         _emisoras_visibles = !filtroVacio ? buscarEmisoras(filtro) : [];
       }else{
-        //FIXME: Añadir la funcionalidad de buscar listas
+        _listas_visibles = !filtroVacio ? buscarListas(filtro) : [];
       }
     });
   }
@@ -78,75 +85,7 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
     if (_emisoras_visibles.isEmpty) {
       return pantallaBusquedaVacia();
     }else{
-      return ListView.builder(
-        itemCount: _emisoras_visibles.length,
-        itemBuilder: (context, index) {
-          final emisora = _emisoras_visibles[index];
-          return Consumer<Reproductor>(
-            builder: (context, reproductor, child) {
-              return ListTile(
-                leading: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: emisora.imagen ?? Image.asset(IMAGEN_EMISORA_POR_DEFECTO),
-                ),
-                // Icono a la izquierda
-                title: Text(emisora.nombre),
-                // Nombre de la emisora
-                subtitle: Text(emisora.etiquetas.isEmpty
-                    ? emisora.url
-                    : emisora.etiquetas.join(", "), overflow: TextOverflow.ellipsis,),
-                // URL
-                //onLongPress: , TODO: Modificar emisora
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                        onPressed: () => widget.editarEmisora?.call(emisora),
-                        icon: Icon(Icons.edit)),
-                    ElevatedButton(
-                      onPressed: ()
-                      {
-                        setState(() {
-                          if (reproductor.emisoraSeleccionada == emisora) {
-                            reproductor.emisoraSeleccionada = Emisora("0", "", "", [], []);
-                            reproductor.pararReproduccion();
-                          } else {
-                            reproductor.emisoraSeleccionada = emisora;
-                            reproductor.reproducirEmisora(emisora, _emisoras_visibles);
-                          }
-                        });
-                      },
-                      child:  SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: reproductor.cargando && reproductor.emisoraSeleccionada == emisora
-                            ? const CircularProgressIndicator()
-                            : reproductor.emisoraSeleccionada == emisora
-                            ? const Icon(Icons.stop_rounded)
-                            : const Icon(Icons.play_arrow_rounded),
-                      ),
-                    ),
-                  ],
-                ),
-                // Botón de reproducción a la derecha
-                onTap: () {
-                  print("Reproduciendo: ${emisora.nombre}");
-                  setState(() {
-                    if (reproductor.emisoraSeleccionada == emisora) {
-                      reproductor.emisoraSeleccionada = Emisora("0", "", "", [], []);
-                      reproductor.pararReproduccion();
-                    } else {
-                      reproductor.emisoraSeleccionada = emisora;
-                      reproductor.reproducirEmisora(emisora, _emisoras_visibles);
-                    }
-                  });
-                },
-              );
-            }
-          );
-        }
-      );
+      return ListaEmisoras(emisoras: _emisoras_visibles);
     }
   }
 
@@ -159,6 +98,20 @@ class _OpenwaveAppPantallaBusquedaState extends State<OpenwaveAppPantallaBusqued
     var emisorasFiltradas = emisoras.where((emisora) => emisora.nombre.toLowerCase().contains(filtro.toLowerCase())).toSet();
     emisorasFiltradas.addAll(emisoras.where((emisora) => emisora.etiquetas.any((etiqueta) => etiqueta.toLowerCase().contains(filtro.toLowerCase()))));
     return emisorasFiltradas.toList();
+  }
+
+  Widget listaListasFiltrada(){
+    if (_listas_visibles.isEmpty) {
+      return pantallaBusquedaVacia();
+    }else{
+      return ListaListas(listas: _listas_visibles);
+    }
+  }
+
+  List<ListaReproduccion> buscarListas(String filtro){
+    var listas = widget.listaListasBuscar ?? Provider.of<GestorListas>(context, listen: false).listas;
+    var listasFiltradas = listas.where((lista) => lista.nombre.toLowerCase().contains(filtro.toLowerCase()));
+    return listasFiltradas.toList();
   }
 
   Widget pantallaBusquedaVacia(){
