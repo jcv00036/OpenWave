@@ -12,6 +12,7 @@ class GestorListas extends ChangeNotifier {
   static Database? _database;
   bool _inicializada = false;
   late GestorEmisoras _gestorEmisoras;
+  late String _id_lista_favoritos;
 
   GestorListas(this._gestorEmisoras);
 
@@ -23,6 +24,14 @@ class GestorListas extends ChangeNotifier {
     }
     return List.of(_listas);
   }
+
+  Future<ListaReproduccion> get listaFavoritos async {
+    if (!_inicializada) {
+      await init();
+    }
+    return _listas.firstWhere((element) => element.id == _id_lista_favoritos);
+  }
+
 
   Future<void> init() async {
     if (_inicializada) return;
@@ -41,6 +50,12 @@ class GestorListas extends ChangeNotifier {
         'FOREIGN KEY("id_emisora") REFERENCES "emisora"("id"),'
         'FOREIGN KEY("id_lista") REFERENCES "lista"("id"))');
 
+    await _database!.execute(
+      'CREATE TABLE IF NOT EXISTS lista_favoritos ('
+      '  id TEXT PRIMARY KEY,'
+      '  FOREIGN KEY (id) REFERENCES lista(id));'
+    );
+
     await _cargarListas();
     _inicializada = true;
     notifyListeners();
@@ -53,10 +68,20 @@ class GestorListas extends ChangeNotifier {
     if (listaListasRaw.isEmpty) {
       int id = await _database!.insert("lista", {"nombre": "lista_favoritos", "permanente": 1});
       _listas.add(ListaReproduccion(id.toString(), TextosApp.getTexto("lista_favoritos"), [], true));
+      _id_lista_favoritos = _listas.first.id;
+
+      // Guardo en la base de datos la lista de favoritos
+      await _database!.insert("lista_favoritos", {"id" : _id_lista_favoritos});
       return;
     }
 
-    // IMPORTANTE: Usar for...in para esperar tareas asíncronas
+    // Cargo la lista de favoritos
+    var listaFavoritosRaw = await _database!.query("lista_favoritos");
+
+    if (listaFavoritosRaw.isNotEmpty) {
+      _id_lista_favoritos = listaFavoritosRaw.first["id"].toString();
+    }
+
     for (var mapa in listaListasRaw) {
       bool permanente = mapa["permanente"] == 1;
       String nombre = permanente ? TextosApp.getTexto(mapa["nombre"].toString()) : mapa["nombre"].toString();
