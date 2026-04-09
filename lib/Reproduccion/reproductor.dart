@@ -59,9 +59,9 @@ class Reproductor extends ChangeNotifier{
         emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
         initialIndex: indiceEmisora,
       );
-    }catch (e){
+    }on PlayerException catch (e){
       print("Error al reproducir emisora: $e");
-      pasarEmisora();
+      pararReproduccion();
       notifyListeners();
       return;
     }
