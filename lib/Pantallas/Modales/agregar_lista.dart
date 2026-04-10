@@ -63,7 +63,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                 textAlign: TextAlign.center,
               ),
               TextField(
-                enabled: !widget._modoEditar,
+                enabled: !widget._listaEditar!.permanente,
                 decoration: InputDecoration(
                   labelText: TextosApp.getTexto("nombre_lista"),
                   border: OutlineInputBorder(
