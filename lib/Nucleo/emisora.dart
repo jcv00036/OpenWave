@@ -14,7 +14,7 @@ class Emisora{
 
   factory Emisora.fromJson(Map<String, dynamic> json){
     var etiquetas = json["tags"];
-    if (etiquetas == null || etiquetas == "") {
+    if (etiquetas == null) {
       etiquetas = [];
     }else{
       etiquetas = etiquetas.toString().split(",");

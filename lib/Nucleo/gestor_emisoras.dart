@@ -78,6 +78,15 @@ class GestorEmisoras extends ChangeNotifier{
   }
 
   Future<bool> agregarEmisoraCopia(Emisora emisora) async {
+
+    // Si las etiquetas es una lista con cadenas vacías, la convierto en una lista vacía
+    if (emisora.etiquetas.toSet().length == 1 && emisora.etiquetas.first.isEmpty) {
+      emisora.etiquetas = [];
+    }
+
+    // Si hay alguna etiqueta vacía, la saco
+    emisora.etiquetas.removeWhere((etiqueta) => etiqueta.isEmpty);
+
     try {
       Uint8List? imagenBytes;
 
