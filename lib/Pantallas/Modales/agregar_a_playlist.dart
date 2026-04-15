@@ -22,9 +22,10 @@ class _AgregarAPlaylistState extends State<AgregarAPlaylist> {
   @override
   Widget build(BuildContext context) {
     GestorListas gestorListas = Provider.of<GestorListas>(context);
+    var listasTotales = gestorListas.listas;
 
     if (!_inicializado) {
-      _listas = gestorListas.listas.where((lista) =>
+      _listas = listasTotales.where((lista) =>
           lista.emisoras.contains(widget._emisoraAgregar)).toSet();
       _inicializado = true;
     }
@@ -55,15 +56,15 @@ class _AgregarAPlaylistState extends State<AgregarAPlaylist> {
                 ),
                 child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: gestorListas.listas.length,
+                    itemCount: listasTotales.length,
                     itemBuilder: (context, index) {
-                      var lista = gestorListas.listas[index];
+                      var lista = listasTotales[index];
 
                       return ListTile(
                         leading: lista.nombre ==
                             TextosApp.getTexto("lista_favoritos") ? Icon(
                             Icons.favorite) : Icon(Icons.list),
-                        title: Text(gestorListas.listas[index].nombre),
+                        title: Text(lista.nombre),
                         trailing: Checkbox(
                           value: _listas.contains(lista),
                           onChanged: (value) {
@@ -125,7 +126,7 @@ class _AgregarAPlaylistState extends State<AgregarAPlaylist> {
               ),
             ),
             onPressed: () async {
-              Set<ListaReproduccion> listasOriginales = gestorListas.listas.where((lista) => lista.emisoras.contains(widget._emisoraAgregar)).toSet();
+              Set<ListaReproduccion> listasOriginales = listasTotales.where((lista) => lista.emisoras.contains(widget._emisoraAgregar)).toSet();
 
               // Primero hacemos el bucle de borrados
               Set<ListaReproduccion> listasBorradas = listasOriginales.difference(_listas);
