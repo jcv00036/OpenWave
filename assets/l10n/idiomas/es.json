@@ -52,5 +52,8 @@
   "favorito_agregado" : "Se ha añadido la emisora a favoritos",
   "favorito_no_agregado" : "No se ha podido añadir la emisora a favoritos",
   "error_conexion_api_busqueda" : "No se ha podido conectar con la API de búsqueda",
-  "no_hay_emisoras" : "No hay emisoras, pruebe a agregar una pulsando en el botón de agregar (+)."
+  "no_hay_emisoras" : "No hay emisoras, pruebe a agregar una pulsando en el botón de agregar (+).",
+  "agregar_a_lista" : "Añadir a lista",
+  "emisora_agregada_listas" : "Se han actualizado las listas de reproducción",
+  "emisoras_agregar_lista" : "Agregar emisora a lista"
 }

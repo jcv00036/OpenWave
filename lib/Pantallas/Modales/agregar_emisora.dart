@@ -300,6 +300,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
           ),
         ),
       ),
+      persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
         Center(
           child: Row(
