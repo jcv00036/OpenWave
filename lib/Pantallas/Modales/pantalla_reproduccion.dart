@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
+import 'package:openwave/Pantallas/Widgets/openwave_app_agregar_lista_boton.dart';
 import 'package:openwave/Pantallas/Widgets/openwave_app_corazon_favoritos.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:openwave/constantes.dart';
@@ -25,6 +26,7 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
         backgroundColor: Colors.transparent, 
         scrolledUnderElevation: 0,
         actions: [
+          BotonAgregarALista(emisoraEditar: Provider.of<Reproductor>(context).emisoraSeleccionada),
           CorazonFavoritos(emisoraEditar: Provider.of<Reproductor>(context).emisoraSeleccionada)
         ],
       ),

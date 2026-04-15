@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:openwave/Pantallas/Widgets/openwave_app_agregar_lista_boton.dart';
 import 'package:openwave/Pantallas/Widgets/openwave_app_corazon_favoritos.dart';
 import 'package:openwave/Pantallas/openwave_app_pantalla_busqueda.dart';
 import 'package:provider/provider.dart';
@@ -121,6 +122,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
       appBar: AppBar(
           title: Text(_titulo),
           actions: [
+            if (widget._modoEditar) BotonAgregarALista(emisoraEditar: widget._emisoraEditar ?? Emisora("0", "", "", [], [])),
             if (widget._modoEditar) CorazonFavoritos(emisoraEditar: widget._emisoraEditar ?? Emisora("0", "", "", [], [])),
           ],
       ),
