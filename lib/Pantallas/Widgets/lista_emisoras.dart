@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:openwave/Nucleo/emisora.dart';
+import 'package:openwave/Pantallas/Modales/agregar_a_playlist.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
 import 'package:provider/provider.dart';
 
 import '../../Nucleo/gestor_emisoras.dart';
+import '../../Nucleo/gestor_listas.dart';
 import '../../constantes.dart';
 import '../../l10n/textos_app.dart';
 import '../Modales/agregar_emisora.dart';
@@ -50,9 +52,36 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                  onPressed: () => editarEmisora(emisora, context),
-                  icon: Icon(Icons.edit)),
+              PopupMenuButton(
+                  itemBuilder: (context){
+                    return <PopupMenuEntry<String>>[
+                      PopupMenuItem(
+                        value: "editar_emisora",
+                        child: ListTile(
+                          leading: Icon(Icons.edit),
+                          title: Text(TextosApp.getTexto("editar_emisora")),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: "agregar_a_lista",
+                        child: ListTile(
+                          leading: Icon(Icons.add_circle_outline),
+                          title: Text(TextosApp.getTexto("agregar_a_lista")),
+                        ),
+                      )
+                    ];
+                  },
+                  onSelected: (value) {
+                    switch(value){
+                      case "editar_emisora":
+                        editarEmisora(emisora, context);
+                        break;
+                      case "agregar_a_lista":
+                        agregregarEmisoraALista(emisora, context);
+                        break;
+                    }
+                  }
+              ),
               ElevatedButton(
                 onPressed: () {
                 print("Reproduciendo: ${emisora.nombre}");
@@ -115,6 +144,8 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
             emisora: emisora,
             eliminarEmisora: (emisora) async {
               if (await manager.eliminarEmisora(emisora)) {
+                var gestorListas = Provider.of<GestorListas>(context, listen: false);
+                gestorListas.recargarListas();
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                         content: Text("${TextosApp.getTexto("emisora_eliminada"
@@ -135,5 +166,21 @@ class _ListaEmisorasState extends State<ListaEmisoras> {
           SnackBar(content: Text(TextosApp.getTexto("error_reproduciendo")))
       );
     }
+  }
+
+  Future<void> agregregarEmisoraALista(Emisora emisora, BuildContext context) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) {
+              return AgregarAPlaylist(emisora: emisora);
+            }
+        )
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(TextosApp.getTexto("emisora_agregada_listas"))
+        )
+    );
   }
 }

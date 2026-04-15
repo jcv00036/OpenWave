@@ -166,4 +166,8 @@ class GestorListas extends ChangeNotifier {
       return false;
     }
   }
+
+  void recargarListas() {
+    _cargarListas();
+  }
 }

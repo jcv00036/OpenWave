@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../Nucleo/emisora.dart';
 import '../Nucleo/gestor_emisoras.dart';
+import '../Nucleo/gestor_listas.dart';
 import '../Reproduccion/reproductor.dart';
 
 class OpenwaveAppPantallaEmisoras extends StatefulWidget {
@@ -44,7 +45,17 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
       body: SafeArea(
         child: Consumer2<GestorEmisoras, Reproductor>(
           builder: (context, manager, reproductor, child) {
-            return ListaEmisoras(emisoras: manager.emisoras);
+            if(manager.emisoras.isEmpty){
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(TextosApp.getTexto("no_hay_emisoras"), overflow: TextOverflow.clip, textAlign: TextAlign.center,),
+                ),
+              );
+            }
+            else {
+              return ListaEmisoras(emisoras: manager.emisoras);
+            }
           },
         ),
       ),
@@ -114,6 +125,8 @@ class _OpenwaveAppPantallaEmisorasState extends State<OpenwaveAppPantallaEmisora
             emisora: emisora,
             eliminarEmisora: (emisora) async {
               if (await manager.eliminarEmisora(emisora)) {
+                var gestorListas = Provider.of<GestorListas>(context, listen: false);
+                gestorListas.recargarListas();
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                         content: Text("${TextosApp.getTexto("emisora_eliminada"

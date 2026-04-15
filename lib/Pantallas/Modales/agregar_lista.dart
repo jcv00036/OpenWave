@@ -63,7 +63,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                 textAlign: TextAlign.center,
               ),
               TextField(
-                enabled: !widget._modoEditar,
+                enabled: widget._modoEditar ? widget._listaEditar!.permanente : true,
                 decoration: InputDecoration(
                   labelText: TextosApp.getTexto("nombre_lista"),
                   border: OutlineInputBorder(
@@ -126,6 +126,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
           ),
         ),
       ),
+      persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
         Center(
           child: Row(

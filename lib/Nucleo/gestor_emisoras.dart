@@ -78,6 +78,15 @@ class GestorEmisoras extends ChangeNotifier{
   }
 
   Future<bool> agregarEmisoraCopia(Emisora emisora) async {
+
+    // Si las etiquetas es una lista con cadenas vacías, la convierto en una lista vacía
+    if (emisora.etiquetas.toSet().length == 1 && emisora.etiquetas.first.isEmpty) {
+      emisora.etiquetas = [];
+    }
+
+    // Si hay alguna etiqueta vacía, la saco
+    emisora.etiquetas.removeWhere((etiqueta) => etiqueta.isEmpty);
+
     try {
       Uint8List? imagenBytes;
 
@@ -163,6 +172,10 @@ class GestorEmisoras extends ChangeNotifier{
   Future<bool> eliminarEmisora(Emisora emisora) async {
     try{
       await _database.delete("emisora", where: "id = ?", whereArgs: [emisora.id]);
+
+      // Borra también todas las apariciones que tenga en una lista de reproduccion
+      await _database.delete("emisora_lista", where: "id_emisora = ?", whereArgs: [emisora.id]);
+
       _emisoras.remove(emisora);
       notifyListeners();
       return true;
