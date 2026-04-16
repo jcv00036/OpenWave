@@ -48,7 +48,11 @@ class _PantallaListaReproduccionState extends State<PantallaListaReproduccion> {
           ),
         ],
       ),
-      body: Consumer<GestorListas>(
+      body: widget.lista.emisoras.isEmpty ?
+      Center(
+          child: Text(TextosApp.getTexto("lista_reproduccion_vacia"))
+      ) :
+      Consumer<GestorListas>(
         builder: (context, manager, child) {
           var index = manager.listas.indexWhere((element) => element.id == widget.lista.id);
           var lista = manager.listas[index];

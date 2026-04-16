@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
+import 'package:openwave/Pantallas/Modales/pantalla_ecualizador.dart';
 import 'package:openwave/Pantallas/Widgets/openwave_app_agregar_lista_boton.dart';
 import 'package:openwave/Pantallas/Widgets/openwave_app_corazon_favoritos.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
@@ -194,7 +195,14 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 70),
                     child: ElevatedButton(
-                      onPressed: () => {/*TODO*/},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PantallaEcualizador()
+                            )
+                        );
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Row(

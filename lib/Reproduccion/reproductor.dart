@@ -1,18 +1,62 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../Nucleo/emisora.dart';
 import '../constantes.dart';
 
+enum PresetsEcualizador{
+  user("ecualizador_preset_user", [0,0,0,0,0]),
+  plano("ecualizador_preset_plano", [0,0,0,0,0]),
+  rock("ecualizador_preset_rock", [3,2,0,2,7]),
+  pop("ecualizador_preset_pop", [0,1,4,6,-2]),
+  radioHablada("ecualizador_preset_radio_hablada", [0,5,7,9,0]),
+  auriculares("ecualizar_preset_altavoces_pequeños", [4,3,1,-1,-3]),
+  electronica("ecualizador_preset_electronica", [3,-1,2,1,4]),
+  ;
+
+  final String nombrePreset;
+  final List<int> _valores;
+  const PresetsEcualizador(this.nombrePreset, valores) : _valores = valores;
+
+  List<int>? get valores => nombrePreset == PresetsEcualizador.user.nombrePreset ? null : _valores;
+}
+
 class Reproductor extends ChangeNotifier{
 
   Emisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
   List<Emisora> _emisorasEscuchando = [];
-  final AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
-                                                        useProxyForRequestHeaders: true, // default
-                                                      );
+  AndroidEqualizer ecualizador = AndroidEqualizer();
+  late AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
+                                              useProxyForRequestHeaders: true,
+                                              audioPipeline: AudioPipeline(androidAudioEffects: [ecualizador]));
+
+  PresetsEcualizador preset = PresetsEcualizador.plano;
+  PresetsEcualizador ultimoPreset = PresetsEcualizador.plano;
+  List<int> ecualizadorUsuario = [0,0,0,0,0];
+
   bool _cargando = false;
-  Reproductor() : super();
+  Reproductor() : super(){
+    // Cargo el ecualizador del usuario desde ecualizador_usuario.json
+    cargarInfoEcualizador();
+  }
+
+  Future<void> cargarInfoEcualizador() async {
+    var listaRaw = jsonDecode(await rootBundle.loadString(ASSET_ECUALIZADOR_USUARIO));
+    ecualizadorUsuario = List<int>.from(listaRaw["valores"]);
+    var presets = PresetsEcualizador.values;
+    try {
+      ultimoPreset = presets.where((preset) => preset.nombrePreset == listaRaw["ultimo_preset"]).first;
+    }
+    catch (e){
+      ultimoPreset = PresetsEcualizador.plano;
+    }
+    await setPresetEcualizador(ultimoPreset);
+  }
 
   void pasarEmisora() async{
     // Compruebo el siguiente índice
@@ -68,6 +112,8 @@ class Reproductor extends ChangeNotifier{
 
     _cargando = false;
     _reproductor.play();
+    setPresetEcualizador(ultimoPreset);
+    ecualizador.setEnabled(true);
     notifyListeners();
     return true;
   }
@@ -75,7 +121,55 @@ class Reproductor extends ChangeNotifier{
   void pararReproduccion() {
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
     _reproductor.stop();
+
+    ultimoPreset = preset;
+    ecualizador.setEnabled(false);
+
     notifyListeners();
+  }
+
+  Future<void> setPresetEcualizador(PresetsEcualizador preset) async {
+    this.preset = preset;
+
+    var parametros = await ecualizador.parameters;
+    if(this.preset != PresetsEcualizador.user){
+      for (var i = 0; i < 5; i++) {
+        parametros.bands[i].setGain(preset.valores![i].toDouble());
+      }
+    }else{
+      for (var i = 0; i < 5; i++) {
+        parametros.bands[i].setGain(ecualizadorUsuario[i].toDouble());
+      }
+    }
+  }
+
+  Future<void> actualizarEcualizadorUsuario(List<int> ecualizadorUsuario) async {
+    print(this.ecualizadorUsuario);
+    this.ecualizadorUsuario = ecualizadorUsuario;
+    print(this.ecualizadorUsuario);
+    notifyListeners();
+
+    // Almacena el nuevo ecualizador en el json
+    var listaRaw = jsonDecode(await rootBundle.loadString(ASSET_ECUALIZADOR_USUARIO));
+    listaRaw["valores"] = this.ecualizadorUsuario;
+
+    final directorio = await getApplicationDocumentsDirectory();
+    final archivo = File('${directorio.path}/${ASSET_ECUALIZADOR_USUARIO.split("/")[1]}');
+    await archivo.writeAsString(jsonEncode(listaRaw));
+  }
+
+  @override
+  void dispose() async{
+    // Almacena el último preset utilizado en el json
+    var listaRaw = jsonDecode(await rootBundle.loadString(ASSET_ECUALIZADOR_USUARIO));
+    listaRaw["ultimo_preset"] = preset.nombrePreset;
+
+    final directorio = await getApplicationDocumentsDirectory();
+    final archivo = File('${directorio.path}/${ASSET_ECUALIZADOR_USUARIO.split("/")[1]}');
+    await archivo.writeAsString(jsonEncode(listaRaw));
+
+    _reproductor.dispose();
+    super.dispose();
   }
 
   List<Emisora> get emisorasEscuchando => List.of(_emisorasEscuchando);
