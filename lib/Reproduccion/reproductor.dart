@@ -98,6 +98,10 @@ class Reproductor extends ChangeNotifier{
   void pararReproduccion() {
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
     _reproductor.stop();
+
+    // Libero la memoria
+    _reproductor.dispose();
+
     notifyListeners();
   }
 
