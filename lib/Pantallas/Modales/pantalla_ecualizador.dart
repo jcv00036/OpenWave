@@ -83,10 +83,12 @@ class _PantallaEcualizadorState extends State<PantallaEcualizador> {
                                                     max: parameters.maxDecibels - (parameters.maxDecibels % 2),
                                                     divisions: parameters.maxDecibels.toInt() - (parameters.maxDecibels.toInt() % 2),
                                                     onChanged: (value) async{
+                                                      List<int> ecualizadorActual = bandas.map((banda) => banda.gain.toInt()).toList();
+                                                      await reproductor.actualizarEcualizadorUsuario(ecualizadorActual);
                                                       await reproductor.setPresetEcualizador(PresetsEcualizador.user);
                                                       setState(() {
                                                         bandas[index].setGain(value);
-                                                        menuController.value = TextEditingValue(text: PresetsEcualizador.user.nombrePreset);
+                                                        menuController.value = TextEditingValue(text: TextosApp.getTexto(PresetsEcualizador.user.nombrePreset));
                                                       });
                                                     },
                                                 );
