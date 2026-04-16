@@ -55,5 +55,13 @@
   "no_hay_emisoras" : "No hay emisoras, pruebe a agregar una pulsando en el botón de agregar (+).",
   "agregar_a_lista" : "Añadir a lista",
   "emisora_agregada_listas" : "Se han actualizado las listas de reproducción",
-  "emisoras_agregar_lista" : "Agregar emisora a lista"
+  "emisoras_agregar_lista" : "Agregar emisora a lista",
+  "titulo_ecualizador" : "Aplicar ecualizador",
+  "ecualizador_preset_user" : "Personalizado",
+  "ecualizador_preset_plano" : "Plano",
+  "ecualizador_preset_rock" : "Rock",
+  "ecualizador_preset_pop" : "Pop",
+  "ecualizador_preset_radio_hablada" : "Radio Hablada",
+  "ecualizar_preset_altavoces_pequeños" : "Altavoces Pequeños",
+  "ecualizador_preset_electronica" : "Electrónica"
 }

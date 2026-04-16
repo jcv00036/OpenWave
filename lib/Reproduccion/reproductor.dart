@@ -4,13 +4,34 @@ import 'package:just_audio/just_audio.dart';
 import '../Nucleo/emisora.dart';
 import '../constantes.dart';
 
+enum PresetsEcualizador{
+  user("ecualizador_preset_user", [0,0,0,0,0]),
+  plano("ecualizador_preset_plano", [0,0,0,0,0]),
+  rock("ecualizador_preset_rock", [3,2,0,2,7]),
+  pop("ecualizador_preset_pop", [0,1,4,6,-2]),
+  radioHablada("ecualizador_preset_radio_hablada", [0,5,7,9,0]),
+  auriculares("ecualizar_preset_altavoces_pequeños", [4,3,1,-1,-3]),
+  electronica("ecualizador_preset_electronica", [3,-1,2,1,4]),
+  ;
+
+  final String nombrePreset;
+  final List<int> _valores;
+  const PresetsEcualizador(this.nombrePreset, valores) : _valores = valores;
+
+  List<int>? get valores => nombrePreset == PresetsEcualizador.user.nombrePreset ? null : _valores;
+}
+
 class Reproductor extends ChangeNotifier{
 
   Emisora _emisoraSeleccionada = Emisora("0", "", "", [], []);
   List<Emisora> _emisorasEscuchando = [];
-  final AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
-                                                        useProxyForRequestHeaders: true, // default
-                                                      );
+  AndroidEqualizer ecualizador = AndroidEqualizer();
+  late final AudioPlayer _reproductor = AudioPlayer(userAgent: USER_AGENT,
+                                               useProxyForRequestHeaders: true,
+                                               audioPipeline: AudioPipeline(androidAudioEffects: [ecualizador]));
+
+  PresetsEcualizador preset = PresetsEcualizador.plano;
+
   bool _cargando = false;
   Reproductor() : super();
 
@@ -68,6 +89,8 @@ class Reproductor extends ChangeNotifier{
 
     _cargando = false;
     _reproductor.play();
+    ecualizador.setEnabled(true);
+    setPresetEcualizador(PresetsEcualizador.plano);
     notifyListeners();
     return true;
   }
@@ -76,6 +99,17 @@ class Reproductor extends ChangeNotifier{
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
     _reproductor.stop();
     notifyListeners();
+  }
+
+  Future<void> setPresetEcualizador(PresetsEcualizador preset) async {
+    this.preset = preset;
+
+    if(this.preset != PresetsEcualizador.user){
+      var parametros = await ecualizador.parameters;
+      for (var i = 0; i < 5; i++) {
+        parametros.bands[i].setGain(preset.valores![i].toDouble());
+      }
+    }
   }
 
   List<Emisora> get emisorasEscuchando => List.of(_emisorasEscuchando);
