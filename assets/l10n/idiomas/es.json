@@ -63,5 +63,6 @@
   "ecualizador_preset_pop" : "Pop",
   "ecualizador_preset_radio_hablada" : "Radio Hablada",
   "ecualizar_preset_altavoces_pequeños" : "Altavoces Pequeños",
-  "ecualizador_preset_electronica" : "Electrónica"
+  "ecualizador_preset_electronica" : "Electrónica",
+  "lista_reproduccion_vacia" : "Lista de reproducción vacía"
 }
