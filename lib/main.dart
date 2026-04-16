@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:openwave/openwave_app.dart';
 import 'package:openwave/l10n/textos_app.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:audio_session/audio_session.dart';
 
 
 Future<void> main() async {
@@ -20,6 +20,9 @@ Future<void> main() async {
   // Se cargan los colores
   SystemTheme.fallbackColor = Colors.amber;
   await SystemTheme.accentColor.load();
+
+  final sesionAudio = await AudioSession.instance;
+  sesionAudio.configure(AudioSessionConfiguration.music());
 
   runApp(const OpenWaveApp());
 }

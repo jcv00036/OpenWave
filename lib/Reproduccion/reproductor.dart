@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:audio_session/audio_session.dart';
+
 
 import '../Nucleo/emisora.dart';
 import '../constantes.dart';
@@ -88,6 +90,10 @@ class Reproductor extends ChangeNotifier{
 
   Future<bool> reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
 
+    final audioSession = await AudioSession.instance;
+
+    if(! await audioSession.setActive(true)) return false;
+
     var indiceEmisora = emisoras.indexOf(emisora);
     if (indiceEmisora == -1) {
       return false;
@@ -118,12 +124,15 @@ class Reproductor extends ChangeNotifier{
     return true;
   }
 
-  void pararReproduccion() {
+  Future<void> pararReproduccion() async {
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
     _reproductor.stop();
 
     ultimoPreset = preset;
     ecualizador.setEnabled(false);
+
+    final audioSession = await AudioSession.instance;
+    await audioSession.setActive(false);
 
     notifyListeners();
   }
