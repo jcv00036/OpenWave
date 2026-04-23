@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import '../Nucleo/emisora.dart';
 import '../constantes.dart';
@@ -100,7 +101,7 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
     try{
       await _reproductor.setAudioSources(
-        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
+        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url), tag: MediaItem(id: emisora.id, title: emisora.nombre, isLive: true, duration: null, artUri: UriData.fromString(IMAGEN_EMISORA_POR_DEFECTO).uri, displaySubtitle: emisora.etiquetas.join(", ")))).toList(),
         initialIndex: indiceEmisora,
       );
     }on PlayerException catch (e){
