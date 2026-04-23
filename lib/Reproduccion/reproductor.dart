@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
@@ -44,6 +45,26 @@ class Reproductor extends ChangeNotifier{
   Reproductor() : super(){
     // Cargo el ecualizador del usuario desde ecualizador_usuario.json
     cargarInfoEcualizador();
+
+    // Hago los listeners
+    _cargarListeners();
+  }
+
+  Future<void> _cargarListeners() async {
+    final sesionAudio = await AudioSession.instance;
+
+    _reproductor.playerEventStream.listen((event) {
+      if (!_reproductor.playing) {
+        return;
+      }
+      if (event.playbackEvent.currentIndex != _emisorasEscuchando.indexOf(_emisoraSeleccionada)) {
+        reproducirEmisora(_emisorasEscuchando[event.playbackEvent.currentIndex!], _emisorasEscuchando);
+      }
+    });
+
+    _reproductor.playerStateStream.listen((state) {
+      if (!state.playing && !cargando) pararReproduccion();
+    });
   }
 
   Future<void> cargarInfoEcualizador() async {
@@ -89,6 +110,10 @@ class Reproductor extends ChangeNotifier{
 
   Future<bool> reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
 
+    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+
+    final sesionAudio = await AudioSession.instance;
+
     var indiceEmisora = emisoras.indexOf(emisora);
     if (indiceEmisora == -1) {
       return false;
@@ -101,7 +126,13 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
     try{
       await _reproductor.setAudioSources(
-        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url), tag: MediaItem(id: emisora.id, title: emisora.nombre, isLive: true, duration: null, artUri: UriData.fromString(IMAGEN_EMISORA_POR_DEFECTO).uri, displaySubtitle: emisora.etiquetas.join(", ")))).toList(),
+        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url), tag: MediaItem(id:
+                                                                                         emisora.id,
+                                                                                         title: emisora.nombre,
+                                                                                         isLive: true,
+                                                                                         duration: null,
+                                                                                         displaySubtitle: emisora.etiquetas.join(", "),
+                                                                                         extras: const {'live': true, 'pausable' : false}))).toList(),
         initialIndex: indiceEmisora,
       );
     }on PlayerException catch (e){
@@ -111,6 +142,8 @@ class Reproductor extends ChangeNotifier{
       return false;
     }
 
+    sesionAudio.setActive(true);
+
     _cargando = false;
     _reproductor.play();
     setPresetEcualizador(ultimoPreset);
@@ -119,12 +152,18 @@ class Reproductor extends ChangeNotifier{
     return true;
   }
 
-  void pararReproduccion() {
+  Future<void> pararReproduccion() async {
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    final sesionAudio = await AudioSession.instance;
+
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
     _reproductor.stop();
 
+    sesionAudio.setActive(false);
+
     ultimoPreset = preset;
     ecualizador.setEnabled(false);
+    _cargando = false;
 
     notifyListeners();
   }
