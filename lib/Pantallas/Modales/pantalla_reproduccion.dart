@@ -19,6 +19,35 @@ class PantallaReproduccion extends StatefulWidget {
 class _PantallaReproduccionState extends State<PantallaReproduccion> {
   final DraggableScrollableController _sheetController = DraggableScrollableController();
 
+  late final Reproductor _reproductor;
+  bool _closed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _reproductor = context.read<Reproductor>();
+    _reproductor.addListener(_onReproductorChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onReproductorChanged();
+    });
+  }
+
+  void _onReproductorChanged() {
+    if (!mounted || _closed) return;
+
+    if (_reproductor.parado == true && Navigator.of(context).canPop()) {
+      _closed = true;
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override void dispose() {
+    _reproductor.removeListener(_onReproductorChanged);
+    _sheetController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -292,10 +321,10 @@ class _PantallaReproduccionState extends State<PantallaReproduccion> {
                                   ),
                                   onTap: () {
                                     reproductor.reproducirEmisora(emisora, reproductor.emisorasEscuchando);
-                                    if (_sheetController.size > 0.25){
+                                    if (_sheetController.size > 0.12){
                                       // Cierro el cajón
                                       _sheetController.animateTo(
-                                        0.25,
+                                        0.12,
                                         duration: const Duration(milliseconds: 300),
                                         curve: Curves.easeOut,
                                       );
