@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audio_session/audio_session.dart';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import '../Nucleo/emisora.dart';
 import '../constantes.dart';
@@ -45,6 +45,26 @@ class Reproductor extends ChangeNotifier{
   Reproductor() : super(){
     // Cargo el ecualizador del usuario desde ecualizador_usuario.json
     cargarInfoEcualizador();
+
+    // Hago los listeners
+    _cargarListeners();
+  }
+
+  Future<void> _cargarListeners() async {
+    final sesionAudio = await AudioSession.instance;
+
+    _reproductor.playerEventStream.listen((event) {
+      if (!_reproductor.playing) {
+        return;
+      }
+      if (event.playbackEvent.currentIndex != _emisorasEscuchando.indexOf(_emisoraSeleccionada)) {
+        reproducirEmisora(_emisorasEscuchando[event.playbackEvent.currentIndex!], _emisorasEscuchando);
+      }
+    });
+
+    _reproductor.playerStateStream.listen((state) {
+      if (!state.playing && !cargando) pararReproduccion();
+    });
   }
 
   Future<void> cargarInfoEcualizador() async {
@@ -89,10 +109,7 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<bool> reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
-
-    final audioSession = await AudioSession.instance;
-
-    if(! await audioSession.setActive(true)) return false;
+    final sesionAudio = await AudioSession.instance;
 
     var indiceEmisora = emisoras.indexOf(emisora);
     if (indiceEmisora == -1) {
@@ -106,7 +123,13 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
     try{
       await _reproductor.setAudioSources(
-        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url))).toList(),
+        emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url), tag: MediaItem(id:
+                                                                                         emisora.id,
+                                                                                         title: emisora.nombre,
+                                                                                         isLive: true,
+                                                                                         duration: null,
+                                                                                         displaySubtitle: emisora.etiquetas.join(", "),
+                                                                                         extras: const {'live': true, 'pausable' : false}))).toList(),
         initialIndex: indiceEmisora,
       );
     }on PlayerException catch (e){
@@ -115,6 +138,8 @@ class Reproductor extends ChangeNotifier{
       notifyListeners();
       return false;
     }
+
+    sesionAudio.setActive(true);
 
     _cargando = false;
     _reproductor.play();
@@ -125,14 +150,16 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<void> pararReproduccion() async {
+    final sesionAudio = await AudioSession.instance;
+
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
     _reproductor.stop();
 
+    sesionAudio.setActive(false);
+
     ultimoPreset = preset;
     ecualizador.setEnabled(false);
-
-    final audioSession = await AudioSession.instance;
-    await audioSession.setActive(false);
+    _cargando = false;
 
     notifyListeners();
   }
@@ -153,9 +180,7 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<void> actualizarEcualizadorUsuario(List<int> ecualizadorUsuario) async {
-    print(this.ecualizadorUsuario);
     this.ecualizadorUsuario = ecualizadorUsuario;
-    print(this.ecualizadorUsuario);
     notifyListeners();
 
     // Almacena el nuevo ecualizador en el json
