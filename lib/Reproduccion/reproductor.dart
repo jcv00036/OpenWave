@@ -121,6 +121,7 @@ class Reproductor extends ChangeNotifier{
 
     _cargando = true;
     notifyListeners();
+    _reproductor.stop();
     try{
       await _reproductor.setAudioSources(
         emisoras.map((emisora) => AudioSource.uri(Uri.parse(emisora.url), tag: MediaItem(id:
