@@ -109,9 +109,6 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<bool> reproducirEmisora(Emisora emisora, List<Emisora> emisoras) async {
-
-    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-
     final sesionAudio = await AudioSession.instance;
 
     var indiceEmisora = emisoras.indexOf(emisora);
@@ -153,7 +150,6 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<void> pararReproduccion() async {
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     final sesionAudio = await AudioSession.instance;
 
     _emisoraSeleccionada = Emisora("0", "", "", [], []);
@@ -184,9 +180,7 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<void> actualizarEcualizadorUsuario(List<int> ecualizadorUsuario) async {
-    print(this.ecualizadorUsuario);
     this.ecualizadorUsuario = ecualizadorUsuario;
-    print(this.ecualizadorUsuario);
     notifyListeners();
 
     // Almacena el nuevo ecualizador en el json
