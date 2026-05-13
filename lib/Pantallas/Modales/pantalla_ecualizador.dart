@@ -26,90 +26,80 @@ class _PantallaEcualizadorState extends State<PantallaEcualizador> {
       body: SafeArea(
         child: Column(
           children: [
-            DropdownMenu(
-              controller: menuController,
-              dropdownMenuEntries: [
-                for (PresetsEcualizador preset in PresetsEcualizador.values)
-                  DropdownMenuEntry(value: preset, label: TextosApp.getTexto(preset.nombrePreset))
-              ],
-              initialSelection: reproductor.preset,
-              onSelected: (value) async {
-                await reproductor.setPresetEcualizador(value as PresetsEcualizador);
-                setState(() {
-                });
-              },
+            Center(
+              child: DropdownMenu(
+                controller: menuController,
+                dropdownMenuEntries: [
+                  for (PresetsEcualizador preset in PresetsEcualizador.values)
+                    DropdownMenuEntry(value: preset, label: TextosApp.getTexto(preset.nombrePreset))
+                ],
+                initialSelection: reproductor.preset,
+                onSelected: (value) async {
+                  await reproductor.setPresetEcualizador(value as PresetsEcualizador);
+                  setState(() {
+                  });
+                },
+              ),
             ),
+            const SizedBox(height: 30),
             Expanded(
-              child: RotatedBox(
-                  quarterTurns: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: FutureBuilder(
-                            future: reproductor.ecualizador.parameters,
-                            builder: (context, asyncSnapshot) {
-                              final parameters = asyncSnapshot.data;
-                              if (parameters == null) {
-                                return SizedBox();
-                              }
-                              var bandas = parameters.bands;
-                              return ListView.builder(
-                                  itemCount: bandas.length,
-                                  itemBuilder: (context, index) {
-                                    var nombreBanda = bandas[index].centerFrequency > 1000 ? "${bandas[index].centerFrequency / 1000}KHz" : "${bandas[index].centerFrequency}Hz";
-                                    return Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Row(
-                                        children: [
-                                          RotatedBox(
-                                              quarterTurns: 1,
-                                              child: Text(nombreBanda)
-                                          ),
-                                          Expanded(
-                                            child: StreamBuilder(
-                                              stream: bandas[index].gainStream,
-                                              builder: (context, asyncSnapshot) {
-                                                var gain = asyncSnapshot.data;
-                                                if (gain == null) {
-                                                  return SizedBox();
-                                                }
-                                                return Slider(
-                                                    value: bandas[index].gain,
-                                                    min: parameters.minDecibels + (parameters.minDecibels % 2),
-                                                    max: parameters.maxDecibels - (parameters.maxDecibels % 2),
-                                                    divisions: parameters.maxDecibels.toInt() - (parameters.maxDecibels.toInt() % 2),
-                                                    onChanged: (value) async{
-                                                      List<int> ecualizadorActual = bandas.map((banda) => banda.gain.toInt()).toList();
-                                                      await reproductor.actualizarEcualizadorUsuario(ecualizadorActual);
-                                                      await reproductor.setPresetEcualizador(PresetsEcualizador.user);
-                                                      setState(() {
-                                                        bandas[index].setGain(value);
-                                                        menuController.value = TextEditingValue(text: TextosApp.getTexto(PresetsEcualizador.user.nombrePreset));
-                                                      });
-                                                    },
-                                                );
-                                              }
-                                            ),
-                                          ),
-                                          RotatedBox(
-                                              quarterTurns: 1,
-                                              child: Text("${bandas[index].gain.toString()}db")
-                                          ),
-                                        ]
-                                      ),
-                                    );
-                                  }
-                              );
-                            }
+              child: FutureBuilder(
+                future: reproductor.ecualizador.parameters,
+                builder: (context, asyncSnapshot) {
+                  final parameters = asyncSnapshot.data;
+                  if (parameters == null) {
+                    return SizedBox();
+                  }
+                  var bandas = parameters.bands;
+                  return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: bandas.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        var nombreBanda = bandas[index].centerFrequency > 1000 ? "${bandas[index].centerFrequency / 1000}KHz" : "${bandas[index].centerFrequency}Hz";
+                        return Container(
+                          width: 55,
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Column(
+                            children: [
+                              Text(nombreBanda),
+                              Expanded(
+                                child: RotatedBox(
+                                  quarterTurns: 3,
+                                  child: StreamBuilder(
+                                    stream: bandas[index].gainStream,
+                                    builder: (context, asyncSnapshot) {
+                                      var gain = asyncSnapshot.data;
+                                      if (gain == null) {
+                                        return SizedBox();
+                                      }
+                                      return Slider(
+                                          value: bandas[index].gain,
+                                          min: parameters.minDecibels + (parameters.minDecibels % 2),
+                                          max: parameters.maxDecibels - (parameters.maxDecibels % 2),
+                                          divisions: parameters.maxDecibels.toInt() - (parameters.maxDecibels.toInt() % 2),
+                                          onChanged: (value) async{
+                                            List<int> ecualizadorActual = bandas.map((banda) => banda.gain.toInt()).toList();
+                                            await reproductor.actualizarEcualizadorUsuario(ecualizadorActual);
+                                            await reproductor.setPresetEcualizador(PresetsEcualizador.user);
+                                            setState(() {
+                                              bandas[index].setGain(value);
+                                              menuController.value = TextEditingValue(text: TextosApp.getTexto(PresetsEcualizador.user.nombrePreset));
+                                            });
+                                          },
+                                      );
+                                    }
+                                  ),
+                                ),
+                              ),
+                              Text("${bandas[index].gain.toString()}db"),
+                            ]
                           ),
-                        )
-                      ],
-                    ),
-                  )
+                        );
+                      }
+                  );
+                }
               ),
             ),
           ],

@@ -20,7 +20,7 @@ class PantallaAgregarEmisora extends StatefulWidget {
     required this.agregarEmisora,
     emisora,
     this.eliminarEmisora,
-    this.agregarEmisoraCopia
+    this.agregarEmisoraCopia,
   }) : _emisoraEditar = emisora,
        _modoEditar = emisora != null;
 
@@ -120,29 +120,39 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(_titulo),
-          actions: [
-            if (widget._modoEditar) BotonAgregarALista(emisoraEditar: widget._emisoraEditar ?? Emisora("0", "", "", [], [])),
-            if (widget._modoEditar) CorazonFavoritos(emisoraEditar: widget._emisoraEditar ?? Emisora("0", "", "", [], [])),
-          ],
-      ),
-      floatingActionButton: widget._modoEditar ? null : FloatingActionButton(
-        shape: const CircleBorder(),
-        onPressed: () {
-          // Abrimos la pantalla de búsqueda
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OpenwaveAppPantallaBusqueda(
-                buscandoEmisoras: true,
-                buscandoOnline: true,
-                agregarEmisoraCopia: widget.agregarEmisoraCopia,
-              ),
+        title: Text(_titulo),
+        actions: [
+          if (widget._modoEditar)
+            BotonAgregarALista(
+              emisoraEditar:
+                  widget._emisoraEditar ?? Emisora("0", "", "", [], []),
             ),
-          );
-        },
-        child: Icon(Icons.search),
+          if (widget._modoEditar)
+            CorazonFavoritos(
+              emisoraEditar:
+                  widget._emisoraEditar ?? Emisora("0", "", "", [], []),
+            ),
+        ],
       ),
+      floatingActionButton: widget._modoEditar
+          ? null
+          : FloatingActionButton(
+              shape: const CircleBorder(),
+              onPressed: () {
+                // Abrimos la pantalla de búsqueda
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OpenwaveAppPantallaBusqueda(
+                      buscandoEmisoras: true,
+                      buscandoOnline: true,
+                      agregarEmisoraCopia: widget.agregarEmisoraCopia,
+                    ),
+                  ),
+                );
+              },
+              child: Icon(Icons.search),
+            ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -304,99 +314,93 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
       ),
       persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
-        Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (widget._modoEditar)
-                ElevatedButton(
-                  style: ButtonStyle(
-                    alignment: Alignment.center,
-                    fixedSize: WidgetStateProperty.all(const Size(180, 50)),
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.errorContainer,
+        if (widget._modoEditar)
+          ElevatedButton(
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              fixedSize: WidgetStateProperty.all(const Size(140, 50)),
+              backgroundColor: WidgetStateProperty.all(
+                Theme.of(context).colorScheme.errorContainer,
+              ),
+            ),
+            onPressed: () async {
+              // Mostramos un diálogo de confirmación
+              var opcion = await showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Text(TextosApp.getTexto("atencion_titulo")),
+                  content: Text(
+                    TextosApp.getTexto("eliminar_emisora_pregunta"),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancelar'),
+                      child: Text(TextosApp.getTexto("boton_cancelar")),
                     ),
-                  ),
-                  onPressed: () async {
-                    // Mostramos un diálogo de confirmación
-                    var opcion = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text(TextosApp.getTexto("atencion_titulo")),
-                        content: Text(
-                          TextosApp.getTexto("eliminar_emisora_pregunta"),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancelar'),
-                            child: Text(TextosApp.getTexto("boton_cancelar")),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Aceptar'),
-                            child: Text(TextosApp.getTexto("boton_aceptar")),
-                          ),
-                        ],
-                      ),
-                    );
-                    if (opcion == 'Cancelar') return;
-                    widget.eliminarEmisora!(widget._emisoraEditar!);
-                    Navigator.pop(context);
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.delete),
-                      SizedBox(width: 8), // Espacio entre el icono y el texto
-                      Expanded(
-                        child: Text(
-                          TextosApp.getTexto("eliminar_emisora"),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  alignment: Alignment.center,
-                  fixedSize: WidgetStateProperty.all(const Size(180, 50)),
-                  backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.inversePrimary,
-                  ),
-                ),
-                onPressed: () {
-                  if (nombre == "" || url == "") {
-                    // Mostrar un mensaje de error
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text(TextosApp.getTexto("atencion_titulo")),
-                        content: Text(TextosApp.getTexto("error_campos")),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: Text(TextosApp.getTexto("boton_aceptar")),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    widget.agregarEmisora(nombre, url, imagen, etiquetas);
-                    Navigator.pop(context);
-                  }
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(widget._modoEditar ? Icons.edit : CupertinoIcons.plus),
-                    SizedBox(width: 8), // Espacio entre el icono y el texto
-                    Text(_titulo, overflow: TextOverflow.ellipsis),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Aceptar'),
+                      child: Text(TextosApp.getTexto("boton_aceptar")),
+                    ),
                   ],
                 ),
+              );
+              if (opcion == 'Cancelar') return;
+              widget.eliminarEmisora!(widget._emisoraEditar!);
+              Navigator.pop(context);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.delete),
+                SizedBox(width: 8), // Espacio entre el icono y el texto
+                Text(
+                  TextosApp.getTexto("eliminar_emisora"),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ElevatedButton(
+          style: ButtonStyle(
+            alignment: Alignment.center,
+            fixedSize: WidgetStateProperty.all(Size(widget._modoEditar ? 140: 180, 50)),
+            backgroundColor: WidgetStateProperty.all(
+              Theme.of(context).colorScheme.inversePrimary,
+            ),
+          ),
+          onPressed: () {
+            if (nombre == "" || url == "") {
+              // Mostrar un mensaje de error
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Text(TextosApp.getTexto("atencion_titulo")),
+                  content: Text(TextosApp.getTexto("error_campos")),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: Text(TextosApp.getTexto("boton_aceptar")),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              widget.agregarEmisora(nombre, url, imagen, etiquetas);
+              Navigator.pop(context);
+            }
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(widget._modoEditar ? Icons.save : CupertinoIcons.plus),
+              SizedBox(width: 8), // Espacio entre el icono y el texto
+              Text(
+                TextosApp.getTexto("guardar_cambios_emisora"),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
