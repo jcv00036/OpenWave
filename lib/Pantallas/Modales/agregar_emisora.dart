@@ -365,7 +365,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
         ElevatedButton(
           style: ButtonStyle(
             alignment: Alignment.center,
-            fixedSize: WidgetStateProperty.all(const Size(140, 50)),
+            fixedSize: WidgetStateProperty.all(Size(widget._modoEditar ? 140: 180, 50)),
             backgroundColor: WidgetStateProperty.all(
               Theme.of(context).colorScheme.inversePrimary,
             ),
