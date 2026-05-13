@@ -2,9 +2,9 @@
   "nombre_app" : "OpenWave",
   "titulo_inicio_emisoras" : "Emisoras",
   "titulo_inicio_listas" : "Listas de reproducción",
-  "agregar_emisora" : "Agregar emisora",
+  "agregar_emisora" : "Agregar",
   "editar_emisora" : "Editar emisora",
-  "eliminar_emisora" : "Borrar emisora",
+  "eliminar_emisora" : "Borrar",
   "nombre_emisora" : "Nombre de la emisora",
   "url_emisora" : "URL de la emisora",
   "atencion_titulo" : "Atención",
@@ -36,9 +36,9 @@
   "lista_vacia" : "Lista vacía",
   "emisoras_nombre_plural" : "emisoras",
   "error_lista_vacia" : "La lista está vacía",
-  "agregar_lista" : "Agregar lista",
+  "agregar_lista" : "Agregar",
   "editar_lista" : "Editar lista",
-  "eliminar_lista" : "Borrar lista",
+  "eliminar_lista" : "Borrar",
   "nombre_lista" : "Nombre de la lista",
   "eliminar_lista_pregunta" : "¿Está seguro de que desea eliminar esta lista?",
   "lista_agregada" : "Se ha añadido la lista",
@@ -65,6 +65,6 @@
   "ecualizar_preset_altavoces_pequeños" : "Altavoces Pequeños",
   "ecualizador_preset_electronica" : "Electrónica",
   "lista_reproduccion_vacia" : "Lista de reproducción vacía",
-  "guardar_cambios_emisora" : "Guardar emisora",
-  "guardar_cambios_lista" : "Guardar lista"
+  "guardar_cambios_emisora" : "Guardar",
+  "guardar_cambios_lista" : "Guardar"
 }

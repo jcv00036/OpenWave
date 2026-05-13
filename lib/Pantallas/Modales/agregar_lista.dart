@@ -128,104 +128,95 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
       ),
       persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
-        Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (widget._modoEditar && !widget._listaEditar!.permanente)
-                ElevatedButton(
-                  style: ButtonStyle(
-                    alignment: Alignment.center,
-                    fixedSize: WidgetStateProperty.all(const Size(180, 50)),
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.errorContainer,
+        if (widget._modoEditar && !widget._listaEditar!.permanente)
+          ElevatedButton(
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              fixedSize: WidgetStateProperty.all(const Size(140, 50)),
+              backgroundColor: WidgetStateProperty.all(
+                Theme.of(context).colorScheme.errorContainer,
+              ),
+            ),
+            onPressed: () async {
+              // Mostramos un diálogo de confirmación
+              var opcion = await showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Text(TextosApp.getTexto("atencion_titulo")),
+                  content: Text(
+                    TextosApp.getTexto("eliminar_lista_pregunta"),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancelar'),
+                      child: Text(TextosApp.getTexto("boton_cancelar")),
                     ),
-                  ),
-                  onPressed: () async {
-                    // Mostramos un diálogo de confirmación
-                    var opcion = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text(TextosApp.getTexto("atencion_titulo")),
-                        content: Text(
-                          TextosApp.getTexto("eliminar_lista_pregunta"),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancelar'),
-                            child: Text(TextosApp.getTexto("boton_cancelar")),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Aceptar'),
-                            child: Text(TextosApp.getTexto("boton_aceptar")),
-                          ),
-                        ],
-                      ),
-                    );
-                    if (opcion == 'Cancelar') return;
-                    widget.eliminarLista!(widget._listaEditar!);
-                    Navigator.pop(context);
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.delete),
-                      SizedBox(width: 8), // Espacio entre el icono y el texto
-                      Expanded(
-                        child: Text(
-                          TextosApp.getTexto("eliminar_lista"),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  alignment: Alignment.center,
-                  fixedSize: WidgetStateProperty.all(const Size(180, 50)),
-                  backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.inversePrimary,
-                  ),
-                ),
-                onPressed: () {
-                  if (nombre == "") {
-                    // Mostrar un mensaje de error
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text(TextosApp.getTexto("atencion_titulo")),
-                        content: Text(TextosApp.getTexto("error_campos")),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: Text(TextosApp.getTexto("boton_aceptar")),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    if (widget._modoEditar) {
-                      widget.editarLista!(nombre, emisoras_agregar);
-                    } else {
-                      widget.agregarLista(nombre, emisoras_agregar);
-                    }
-                    Navigator.pop(context);
-                  }
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(widget._modoEditar ? Icons.edit : CupertinoIcons.plus),
-                    SizedBox(width: 8), // Espacio entre el icono y el texto
-                    Text(TextosApp.getTexto("guardar_cambios_lista"), overflow: TextOverflow.ellipsis),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Aceptar'),
+                      child: Text(TextosApp.getTexto("boton_aceptar")),
+                    ),
                   ],
                 ),
-              ),
+              );
+              if (opcion == 'Cancelar') return;
+              widget.eliminarLista!(widget._listaEditar!);
+              Navigator.pop(context);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.delete),
+                SizedBox(width: 8), // Espacio entre el icono y el texto
+                Text(
+                  TextosApp.getTexto("eliminar_lista"),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ElevatedButton(
+          style: ButtonStyle(
+            alignment: Alignment.center,
+            fixedSize: WidgetStateProperty.all(const Size(140, 50)),
+            backgroundColor: WidgetStateProperty.all(
+              Theme.of(context).colorScheme.inversePrimary,
+            ),
+          ),
+          onPressed: () {
+            if (nombre == "") {
+              // Mostrar un mensaje de error
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Text(TextosApp.getTexto("atencion_titulo")),
+                  content: Text(TextosApp.getTexto("error_campos")),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: Text(TextosApp.getTexto("boton_aceptar")),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              if (widget._modoEditar) {
+                widget.editarLista!(nombre, emisoras_agregar);
+              } else {
+                widget.agregarLista(nombre, emisoras_agregar);
+              }
+              Navigator.pop(context);
+            }
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(widget._modoEditar ? Icons.save : CupertinoIcons.plus),
+              SizedBox(width: 8), // Espacio entre el icono y el texto
+              Text(TextosApp.getTexto("guardar_cambios_lista"), overflow: TextOverflow.ellipsis),
             ],
           ),
         ),
