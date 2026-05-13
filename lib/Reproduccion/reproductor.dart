@@ -68,7 +68,19 @@ class Reproductor extends ChangeNotifier{
   }
 
   Future<void> cargarInfoEcualizador() async {
-    var listaRaw = jsonDecode(await rootBundle.loadString(ASSET_ECUALIZADOR_USUARIO));
+    // Cargo el fichero ecualizador desde la carpeta de documentos
+    final directorio = await getApplicationDocumentsDirectory();
+    final archivo = File('${directorio.path}/${FICHERO_ECUALIZADOR_USUARIO.split("/").last}');
+    if (!await archivo.exists()) {
+      // Si no existe, lo creo
+      var listaRaw = jsonEncode({
+        "ultimo_preset": PresetsEcualizador.plano.nombrePreset,
+        "valores": [0,0,0,0,0]
+      });
+      await archivo.writeAsString(listaRaw);
+    }
+    // Si existe, lo leo
+    var listaRaw = jsonDecode(await archivo.readAsString());
     ecualizadorUsuario = List<int>.from(listaRaw["valores"]);
     var presets = PresetsEcualizador.values;
     try {
@@ -185,23 +197,24 @@ class Reproductor extends ChangeNotifier{
     notifyListeners();
 
     // Almacena el nuevo ecualizador en el json
-    var listaRaw = jsonDecode(await rootBundle.loadString(ASSET_ECUALIZADOR_USUARIO));
-    listaRaw["valores"] = this.ecualizadorUsuario;
-
     final directorio = await getApplicationDocumentsDirectory();
-    final archivo = File('${directorio.path}/${ASSET_ECUALIZADOR_USUARIO.split("/")[1]}');
-    await archivo.writeAsString(jsonEncode(listaRaw));
+    var fichero = File('${directorio.path}/${FICHERO_ECUALIZADOR_USUARIO.split("/").last}');
+    var listaRaw = jsonDecode(await fichero.readAsString());
+    listaRaw["valores"] = this.ecualizadorUsuario;
+    listaRaw["ultimo_preset"] = preset.nombrePreset;
+
+    await fichero.writeAsString(jsonEncode(listaRaw));
   }
 
   @override
   void dispose() async{
     // Almacena el último preset utilizado en el json
-    var listaRaw = jsonDecode(await rootBundle.loadString(ASSET_ECUALIZADOR_USUARIO));
+    final directorio = await getApplicationDocumentsDirectory();
+    var fichero = File('${directorio.path}/${FICHERO_ECUALIZADOR_USUARIO.split("/").last}');
+    var listaRaw = jsonDecode(await fichero.readAsString());
     listaRaw["ultimo_preset"] = preset.nombrePreset;
 
-    final directorio = await getApplicationDocumentsDirectory();
-    final archivo = File('${directorio.path}/${ASSET_ECUALIZADOR_USUARIO.split("/")[1]}');
-    await archivo.writeAsString(jsonEncode(listaRaw));
+    await fichero.writeAsString(jsonEncode(listaRaw));
 
     _reproductor.dispose();
     super.dispose();
