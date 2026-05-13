@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:openwave/Nucleo/gestor_emisoras.dart';
 import 'package:openwave/Nucleo/gestor_listas.dart';
 import 'package:openwave/Reproduccion/reproductor.dart';
@@ -11,6 +12,8 @@ class OpenWaveApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Impido que la pantalla se pueda girar
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return SystemThemeBuilder(
       builder: (context, color) {
         return ColoredBox(
