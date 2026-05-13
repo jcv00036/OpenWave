@@ -63,7 +63,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                 textAlign: TextAlign.center,
               ),
               TextField(
-                enabled: widget._modoEditar ? widget._listaEditar!.permanente : true,
+                enabled: widget._modoEditar ? !widget._listaEditar!.permanente : true,
                 decoration: InputDecoration(
                   labelText: TextosApp.getTexto("nombre_lista"),
                   border: OutlineInputBorder(
@@ -222,7 +222,7 @@ class _PantallaAgregarListaState extends State<PantallaAgregarLista> {
                   children: [
                     Icon(widget._modoEditar ? Icons.edit : CupertinoIcons.plus),
                     SizedBox(width: 8), // Espacio entre el icono y el texto
-                    Text(_titulo, overflow: TextOverflow.ellipsis),
+                    Text(TextosApp.getTexto("guardar_cambios_lista"), overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),

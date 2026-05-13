@@ -394,7 +394,7 @@ class _PantallaAgregarEmisoraState extends State<PantallaAgregarEmisora> {
                   children: [
                     Icon(widget._modoEditar ? Icons.edit : CupertinoIcons.plus),
                     SizedBox(width: 8), // Espacio entre el icono y el texto
-                    Text(_titulo, overflow: TextOverflow.ellipsis),
+                    Text(TextosApp.getTexto("guardar_cambios_emisora"), overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
